@@ -1,0 +1,23 @@
+# Web Framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+
+# Templating
+jinja2==3.1.2
+
+# ML & NLP
+transformers==4.35.2
+torch==2.1.1
+sentencepiece==0.1.99
+
+# Web Scraping & Corpus Expansion
+beautifulsoup4==4.12.2
+lxml==4.9.3
+requests==2.31.0
+
+# PDF Processing
+PyPDF2==3.0.1
+
+# Utilities
+python-dotenv==1.0.0

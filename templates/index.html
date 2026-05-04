@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="om">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Afaan Oromo Spell Checker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            transition: background 0.3s;
+        }
+        
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+            transition: background 0.3s, color 0.3s;
+        }
+        
+        body.dark-mode .container {
+            background: #1e1e2f;
+            color: #e0e0e0;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-align: center;
+        }
+        
+        body.dark-mode h1 {
+            color: #f0f0f0;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        body.dark-mode .subtitle {
+            color: #aaa;
+        }
+        
+        .emoji {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+        
+        form {
+            margin-bottom: 30px;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s, background 0.3s, color 0.3s;
+        }
+        
+        body.dark-mode textarea {
+            background: #2a2a3e;
+            color: #e0e0e0;
+            border-color: #444;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        body.dark-mode textarea:focus {
+            border-color: #8899ff;
+        }
+        
+        textarea::placeholder {
+            color: #aaa;
+        }
+        
+        body.dark-mode textarea::placeholder {
+            color: #666;
+        }
+        
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .result {
+            background: #f8f9fa;
+            border-left: 5px solid #4CAF50;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .result h3 {
+            color: #4CAF50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .corrected-text {
+            color: #333;
+            font-size: 1.3em;
+            line-height: 1.6;
+            padding: 15px;
+            background: white;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+        
+        .corrections-list {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 8px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .corrections-list h4 {
+            color: #1976D2;
+            margin-bottom: 12px;
+        }
+        
+        .correction-item {
+            display: inline-block;
+            margin: 5px;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .original-word {
+            color: #f44336;
+            text-decoration: line-through;
+            font-weight: 500;
+        }
+        
+        .arrow {
+            color: #666;
+            margin: 0 5px;
+        }
+        
+        .corrected-word {
+            color: #4CAF50;
+            font-weight: 600;
+        }
+        
+        .confidence-badge {
+            display: inline-block;
+            margin-left: 10px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            color: white;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .feedback-buttons {
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+        .feedback-btn {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            margin: 0 3px;
+            padding: 0;
+            border: none;
+            border-radius: 50%;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .accept-btn {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .accept-btn:hover {
+            transform: scale(1.2);
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.4);
+        }
+        
+        .reject-btn {
+            background: #f44336;
+            color: white;
+        }
+        
+        .reject-btn:hover {
+            transform: scale(1.2);
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.4);
+        }
+        
+        .grammar-issues {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff3e0;
+            border-radius: 8px;
+            border-left: 4px solid #FF9800;
+        }
+        
+        .grammar-issues h4 {
+            color: #E65100;
+            margin-bottom: 12px;
+        }
+        
+        .grammar-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+        
+        .grammar-item strong {
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .suggestion {
+            color: #1976D2;
+            font-size: 0.95em;
+        }
+        
+        .error {
+            background: #ffebee;
+            border-left: 5px solid #f44336;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .original-text {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .original-text h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .original-text p {
+            color: #856404;
+            font-size: 1.1em;
+        }
+        
+        .features {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .features h3 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .feature {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .feature-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .feature p {
+            color: #666;
+            font-size: 0.95em;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            textarea {
+                height: 150px;
+            }
+            
+            button {
+                width: 100%;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="text-align: right; margin-bottom: 10px;">
+            <button onclick="toggleDarkMode()" style="padding: 8px 16px; font-size: 0.9em; cursor: pointer;">🌓 Toggle Dark Mode</button>
+        </div>
+        
+        <h1><span class="emoji">🔤</span>Afaan Oromo Spell Checker</h1>
+        <p class="subtitle">AI-powered spelling correction for Afaan Oromo language</p>
+        
+        <form action="/check" method="post">
+            <textarea 
+                name="text" 
+                placeholder="Type or paste Afaan Oromo text here...
+                
+Example: 'Ani bishaan dhuguu fedha' or 'Inni gara mana deeme'"
+            >{% if original %}{{ original }}{% endif %}</textarea>
+            
+            <div class="button-container">
+                <button type="submit">
+                    <span class="emoji">🔍</span>Check Spelling
+                </button>
+            </div>
+        </form>
+        
+        {% if error %}
+        <div class="error">
+            <strong>⚠️ {{ error }}</strong>
+        </div>
+        {% endif %}
+        
+        {% if corrected %}
+        <div class="result">
+            <h3><span class="emoji">✅</span>Corrected Text</h3>
+            
+            {% if original %}
+            <div class="original-text">
+                <h4>Original:</h4>
+                <p>{{ original }}</p>
+            </div>
+            {% endif %}
+            
+            <p class="corrected-text">{{ corrected }}</p>
+            
+            <div style="text-align: center; margin-top: 15px;">
+                <button onclick="exportCorrections()" style="padding: 10px 20px; font-size: 1em; cursor: pointer; background: #2196F3; color: white; border: none; border-radius: 5px;">💾 Export Corrections</button>
+            </div>
+            
+            {% if corrections and corrections|length > 0 %}
+            <div class="corrections-list">
+                <h4>📝 Corrections Made ({{ corrections|length }}):</h4>
+                {% for correction in corrections %}
+                <div class="correction-item">
+                    <span class="original-word">{{ correction.original }}</span>
+                    <span class="arrow">→</span>
+                    <span class="corrected-word">{{ correction.corrected }}</span>
+                    <span class="confidence-badge" style="background: {% if correction.confidence >= 80 %}#4CAF50{% elif correction.confidence >= 60 %}#FF9800{% else %}#f44336{% endif %};">
+                        {{ correction.confidence }}%
+                    </span>
+                    <div class="feedback-buttons">
+                        <button onclick="recordFeedback('{{ correction.original }}', '{{ correction.corrected }}', true)" class="feedback-btn accept-btn">✓</button>
+                        <button onclick="recordFeedback('{{ correction.original }}', '{{ correction.corrected }}', false)" class="feedback-btn reject-btn">✗</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            {% if grammar_issues and grammar_issues|length > 0 %}
+            <div class="grammar-issues">
+                <h4>⚠️ Grammar Suggestions:</h4>
+                {% for issue in grammar_issues %}
+                <div class="grammar-item">
+                    <strong>{{ issue.message }}</strong>
+                    {% if issue.suggestion %}
+                    <span class="suggestion">Suggestion: {{ issue.suggestion }}</span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <div class="features">
+            <h3>✨ Features</h3>
+            <div class="feature-grid">
+                <div class="feature">
+                    <div class="feature-icon">🎯</div>
+                    <p>Context Aware<br><small>Uses bigrams & trigrams</small></p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">⚡</div>
+                    <p>Fast Correction<br><small>59,000+ words</small></p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">💡</div>
+                    <p>Word Suggestions<br><small>Multiple alternatives</small></p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📝</div>
+                    <p>Grammar Checking<br><small>Basic grammar rules</small></p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📖</div>
+                    <p>Bible Corpus<br><small>Complete Oromo Bible</small></p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🔤</div>
+                    <p>Hudhaa Support<br><small>Handles apostrophes</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Dark mode toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        }
+        
+        // Load dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+        }
+        
+        // Export corrections
+        function exportCorrections() {
+            const original = document.querySelector('.original-text p');
+            const corrected = document.querySelector('.corrected-text');
+            
+            if (!original || !corrected) return;
+            
+            const text = `Original: ${original.textContent}\n\nCorrected: ${corrected.textContent}`;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'corrections.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // Record user feedback
+        function recordFeedback(original, corrected, accepted) {
+            fetch('/record_feedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    original_word: original,
+                    corrected_word: corrected,
+                    accepted: accepted
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const msg = accepted ? 'Correction accepted! ✓' : 'Correction rejected ✗';
+                    showNotification(msg, accepted ? 'success' : 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error recording feedback:', error);
+            });
+        }
+        
+        // Show notification
+        function showNotification(message, type) {
+            const notif = document.createElement('div');
+            notif.textContent = message;
+            notif.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 600;
+                z-index: 10000;
+                animation: slideInRight 0.3s ease-out;
+                background: ${type === 'success' ? '#4CAF50' : '#f44336'};
+            `;
+            document.body.appendChild(notif);
+            
+            setTimeout(() => {
+                notif.style.opacity = '0';
+                notif.style.transition = 'opacity 0.3s';
+                setTimeout(() => notif.remove(), 300);
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
