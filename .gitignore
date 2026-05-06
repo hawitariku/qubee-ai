@@ -74,6 +74,7 @@ checkpoints/
 .coverage
 htmlcov/
 .tox/
+tests/__pycache__/
 
 # Documentation builds
 docs/_build/
@@ -87,3 +88,10 @@ Thumbs.db
 gaz_book.pdf
 gaz_book_extracted.txt
 new.text
+
+# Batch processing outputs
+batch_results/
+corrected_files/
+
+# Docker
+.dockerignore
