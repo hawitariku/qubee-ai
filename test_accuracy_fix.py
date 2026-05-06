@@ -102,11 +102,17 @@ def test_accuracy():
         result = checker.correct_sentence_with_context(input_sent)
         duration = time.time() - start_time
         
+        # Handle tuple return (corrected_text, corrections)
+        if isinstance(result, tuple):
+            corrected_text = result[0]
+        else:
+            corrected_text = result
+        
         # Check if key corrections are present
         success = True
-        if "bishan" in input_sent and "bishaan" not in result.lower():
+        if "bishan" in input_sent and "bishaan" not in corrected_text.lower():
             success = False
-        if "fedh" in input_sent and "fedha" not in result.lower():
+        if "fedh" in input_sent and "fedha" not in corrected_text.lower():
             success = False
         
         if success:
@@ -118,7 +124,7 @@ def test_accuracy():
         
         print(f"{status} | {description:30s}")
         print(f"  Input:    '{input_sent}'")
-        print(f"  Output:   '{result}'")
+        print(f"  Output:   '{corrected_text}'")
         print(f"  Expected: '{expected_sent}'")
         print(f"  Duration: {duration:.3f}s")
         print()
@@ -135,7 +141,10 @@ def test_accuracy():
     cache_stats = checker.get_cache_stats()
     print(f"  Cache hits: {cache_stats['hits']}")
     print(f"  Cache misses: {cache_stats['misses']}")
-    print(f"  Hit rate: {cache_stats['hit_rate']:.1%}")
+    if isinstance(cache_stats['hit_rate'], str):
+        print(f"  Hit rate: {cache_stats['hit_rate']}")
+    else:
+        print(f"  Hit rate: {cache_stats['hit_rate']:.1%}")
     
     # Overall assessment
     print("\n" + "="*70)
