@@ -483,7 +483,7 @@ class MLEnhancedSpellChecker:
         return previous_row[-1]
 
     def get_word_suggestions(self, word, top_n=5):
-        """Get top N suggestions for a misspelled word with ML enhancement"""
+        """Get top N suggestions for a misspelled word with balanced scoring"""
         word_lower = word.lower()
         
         # Check cache first
@@ -503,15 +503,43 @@ class MLEnhancedSpellChecker:
         # Edit distance 1 candidates
         candidates_1 = self._known(self._get_edits(word_lower))
         for cand in candidates_1:
-            score = self.words_db[cand] * (1.0 + self._similarity_ratio(word_lower, cand))
+            # Use balanced scoring
+            edit_dist = 1
+            edit_score = 90  # Edit distance 1
+            phonetic_score = self._phonetic_similarity(word_lower, cand) * 100
+            freq = self.words_db[cand]
+            max_freq = max(self.words_db.values()) if self.words_db else 1
+            freq_score = (freq / max_freq) * 100
+            
+            # Combined score
+            score = (
+                edit_score * 0.40 +
+                phonetic_score * 0.30 +
+                freq_score * 0.20 +
+                50 * 0.10  # Base pattern score
+            )
             all_suggestions.append((cand, score))
         
         # Edit distance 2 candidates (limited)
-        if len(candidates_1) == 0:
+        if len(candidates_1) < top_n:
             candidates_2 = self._known(e2 for e1 in list(self._get_edits(word_lower))[:100] 
                                       for e2 in self._get_edits(e1))
             for cand in candidates_2:
-                score = self.words_db[cand] * self._similarity_ratio(word_lower, cand)
+                # Use balanced scoring
+                edit_dist = 2
+                edit_score = 70  # Edit distance 2
+                phonetic_score = self._phonetic_similarity(word_lower, cand) * 100
+                freq = self.words_db[cand]
+                max_freq = max(self.words_db.values()) if self.words_db else 1
+                freq_score = (freq / max_freq) * 100
+                
+                # Combined score
+                score = (
+                    edit_score * 0.40 +
+                    phonetic_score * 0.30 +
+                    freq_score * 0.20 +
+                    40 * 0.10  # Base pattern score
+                )
                 all_suggestions.append((cand, score))
         
         # ML enhancement: get suggestions from transformer model
@@ -520,8 +548,19 @@ class MLEnhancedSpellChecker:
             ml_suggestions = self.get_ml_suggestions(test_sentence, 1, top_n=3)
             for ml_word in ml_suggestions:
                 if ml_word not in [s[0] for s in all_suggestions]:
-                    # Give ML suggestions a moderate score
-                    score = self.words_db.get(ml_word, 10) * 0.8
+                    # Give ML suggestions a moderate score (assume edit distance 2)
+                    edit_score = 70
+                    phonetic_score = self._phonetic_similarity(word_lower, ml_word) * 100
+                    freq = self.words_db.get(ml_word, 10)
+                    max_freq = max(self.words_db.values()) if self.words_db else 1
+                    freq_score = (freq / max_freq) * 100
+                    
+                    score = (
+                        edit_score * 0.40 +
+                        phonetic_score * 0.30 +
+                        freq_score * 0.20 +
+                        60 * 0.10  # ML bonus
+                    )
                     all_suggestions.append((ml_word, score))
         
         # Sort by score and return top N
@@ -534,7 +573,7 @@ class MLEnhancedSpellChecker:
         return suggestions if suggestions else [word_lower]
 
     def correct_word(self, word):
-        """Corrects a single word"""
+        """Corrects a single word using balanced scoring"""
         word_lower = word.lower()
         
         # Check cache
@@ -557,12 +596,62 @@ class MLEnhancedSpellChecker:
         if not candidates:
             return word
         
-        best = max(candidates, key=self.words_db.get)
+        # Use balanced scoring instead of just frequency
+        best_score = -1
+        best_candidate = word
+        
+        for candidate in candidates:
+            # 1. EDIT DISTANCE SCORE (40% weight)
+            edit_dist = self._calculate_edit_distance(word_lower, candidate)
+            if edit_dist == 0:
+                edit_score = 100
+            elif edit_dist == 1:
+                edit_score = 90
+            elif edit_dist == 2:
+                edit_score = 70
+            elif edit_dist == 3:
+                edit_score = 50
+            else:
+                edit_score = max(0, 30 - (edit_dist - 3) * 10)
+            
+            # 2. PHONETIC SIMILARITY (30% weight)
+            phonetic_score = self._phonetic_similarity(word_lower, candidate) * 100
+            
+            # 3. FREQUENCY SCORE (20% weight) - REDUCED!
+            freq = self.words_db[candidate]
+            max_freq = max(self.words_db.values()) if self.words_db else 1
+            freq_score = (freq / max_freq) * 100
+            
+            # 4. PATTERN MATCHING (10% weight)
+            pattern_score = 0
+            
+            # Afaan Oromo suffix bonus
+            oromo_suffixes = ['uu', 'aa', 'ee', 'ii', 'oo', 'aan', 'een', 'iin', 'oon', 'un', 'tti', 'rra', 'ssa']
+            if any(candidate.endswith(suffix) for suffix in oromo_suffixes):
+                pattern_score += 30
+            
+            # Vowel length preservation
+            if word_lower.count('aa') > 0 and candidate.count('aa') > 0:
+                pattern_score += 20
+            if word_lower.count('ee') > 0 and candidate.count('ee') > 0:
+                pattern_score += 20
+            
+            # COMBINED SCORE with balanced weights
+            total_score = (
+                edit_score * 0.40 +      # Edit distance (PRIMARY)
+                phonetic_score * 0.30 +  # Phonetic similarity
+                freq_score * 0.20 +      # Frequency (REDUCED)
+                pattern_score * 0.10     # Pattern matching
+            )
+            
+            if total_score > best_score:
+                best_score = total_score
+                best_candidate = candidate
         
         # Cache result
-        self.correction_cache[cache_key] = best
+        self.correction_cache[cache_key] = best_candidate
         
-        return best
+        return best_candidate
 
     def correct_sentence_with_context(self, sentence):
         """Correct spelling using context and ML"""
