@@ -654,14 +654,13 @@ class MLEnhancedSpellChecker:
         return best_candidate
 
     def correct_sentence_with_context(self, sentence):
-        """Correct spelling using context and ML"""
+        """Correct spelling using balanced scoring (simplified approach)"""
         words = sentence.split()
         corrected_words = []
         corrections_made = []
         
-        is_incomplete = self._is_sentence_incomplete(sentence)
-        
         for i, word in enumerate(words):
+            # Separate punctuation from word
             clean_word = re.sub(r'[^\w\']', '', word)
             punctuation = word[len(clean_word):] if len(word) > len(clean_word) else ""
             
@@ -671,83 +670,29 @@ class MLEnhancedSpellChecker:
             
             word_lower = clean_word.lower()
             
+            # If word is in vocabulary, keep it as-is
             if word_lower in self.words_db:
                 corrected_words.append(word)
                 continue
             
-            # Get candidate corrections
-            candidates = self._known(self._get_edits(word_lower))
-            if not candidates:
-                edits_list = list(self._get_edits(word_lower))[:200]
-                candidates = self._known(e2 for e1 in edits_list 
-                                        for e2 in self._get_edits(e1))
+            # Use the balanced scoring from correct_word()
+            corrected = self.correct_word(word_lower)
             
-            if not candidates:
-                corrected_words.append(word)
-                continue
+            # Preserve original capitalization
+            if clean_word[0].isupper():
+                corrected = corrected.capitalize()
             
-            # ML enhancement: get context-aware suggestions
-            if self.use_ml:
-                ml_suggestions = self.get_ml_suggestions(sentence, i, top_k=3)
-                # Boost candidates that ML also suggests
-                for cand in list(candidates):
-                    if cand in ml_suggestions:
-                        self.words_db[cand] += 200  # Temporary boost
+            # Add punctuation back
+            corrected_with_punct = corrected + punctuation
             
-            # Use context to select best candidate
-            best_candidate = self._select_with_context(
-                candidates, word_lower, corrected_words, i, words, i
-            )
-            
-            # Calculate confidence
-            confidence = self._calculate_confidence(candidates, best_candidate, word_lower)
-            
-            # SMART CORRECTION LOGIC (Option C - Balanced)
-            # Only correct when it makes sense, respect dialects and ambiguity
-            
-            edit_dist = self._calculate_edit_distance(word_lower, best_candidate)
-            phonetic_sim = self._phonetic_similarity(word_lower, best_candidate)
-            
-            should_correct = False
-            
-            # Rule 1: OBVIOUS TYPOS - Edit distance 1, high phonetic similarity
-            # Example: "affan" → "afaan" (1 char diff, sounds very similar)
-            # Example: "fedh" → "fedha" (missing vowel at end)
-            if edit_dist == 1 and phonetic_sim >= 0.75 and confidence >= 75:
-                should_correct = True
-            
-            # Rule 2: CLEAR TYPOS - Edit distance 1, good phonetic, high confidence
-            # Example: "fedh" → "fedha" (missing vowel)
-            elif edit_dist == 1 and phonetic_sim >= 0.75 and confidence >= 85:
-                should_correct = True
-            
-            # Rule 3: CONTEXT HELPS - Lower threshold if context strongly supports
-            # Example: "Oromo" in language context → "Oromoo"
-            elif edit_dist <= 2 and confidence >= 90 and phonetic_sim >= 0.70:
-                should_correct = True
-            
-            # Rule 4: DON'T CORRECT if word follows STRONG Afaan Oromo patterns
-            # and confidence is not very high
-            # Examples: "hiin" (double vowel), "hawin" (geminated consonant)
-            elif self._follows_oromo_patterns(word_lower) and confidence < 90:
-                should_correct = False  # Respect dialect words when not very confident
-            
-            # Rule 5: DON'T CORRECT if ambiguous (multiple valid interpretations)
-            # Example: "mal" could be "maal" or "jal"
-            elif len(candidates) > 1 and confidence < 85:
-                should_correct = False  # Too ambiguous
-            
-            # Default: Don't correct if uncertain
-            else:
-                should_correct = False
-            
-            if should_correct and best_candidate != word_lower:
-                corrected_words.append(best_candidate + punctuation)
+            # Track correction if word changed
+            if corrected != word_lower:
+                corrected_words.append(corrected_with_punct)
                 corrections_made.append({
                     'original': word,
-                    'corrected': best_candidate + punctuation,
+                    'corrected': corrected_with_punct,
                     'position': i,
-                    'confidence': confidence
+                    'confidence': 85  # Default confidence for balanced scoring
                 })
             else:
                 corrected_words.append(word)
