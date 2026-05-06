@@ -9,8 +9,29 @@ AI-powered spell and grammar checker for Afaan Oromo language.
 - 📝 Grammar checking with 12 Afaan Oromo-specific rules
 - ⚡ Fast performance with smart caching
 - 🌐 REST API with web interface
+- 🐳 Docker support for easy deployment
+- 📦 Batch processing for multiple files
+- ✅ Comprehensive test suite (30+ tests)
 
 ## Quick Start
+
+### Option 1: Automated Installation (Recommended)
+
+```bash
+# Clone repository
+git clone https://github.com/hawitariku/qubee-ai.git
+cd qubee-ai
+
+# Run installation script
+# Windows:
+install.bat
+
+# Linux/Mac:
+chmod +x install.sh
+./install.sh
+```
+
+### Option 2: Manual Installation
 
 ```bash
 # Clone repository
@@ -22,6 +43,17 @@ pip install -r requirements.txt
 
 # Start server
 python main.py
+```
+
+### Option 3: Docker
+
+```bash
+# Clone repository
+git clone https://github.com/hawitariku/qubee-ai.git
+cd qubee-ai
+
+# Run with Docker Compose
+docker-compose up -d
 ```
 
 Open `http://localhost:8082` in your browser.
@@ -43,11 +75,43 @@ response = requests.post('http://localhost:8082/check',
                         data={'text': 'Ani bishaan dhuguu fedh'})
 ```
 
+### Batch Processing
+
+Process multiple files at once:
+
+```bash
+# Process directory
+python batch_check.py --input texts/ --output results.csv --recursive
+
+# Export corrected files
+python batch_check.py --input texts/ --output results.json --export-corrected corrected/
+```
+
+## Documentation
+
+- **[API Documentation](API.md)** - Complete API reference
+- **[Architecture](ARCHITECTURE.md)** - System design and technical details
+- **[Contributing](CONTRIBUTING.md)** - How to contribute
+- **[Changelog](CHANGELOG.md)** - Version history
+
+## Testing
+
+Run the comprehensive test suite:
+
+```bash
+python tests/test_spell_checker.py
+```
+
 ## Technology
 
 - **Backend**: FastAPI (Python)
 - **ML Model**: AfriBERTa transformer
 - **Corpus**: 59K+ words (Bible + Wikipedia)
+- **Deployment**: Docker + Docker Compose
+
+## Contributing
+
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
 
