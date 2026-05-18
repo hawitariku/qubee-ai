@@ -118,6 +118,11 @@ async def check_spelling(request: Request, text: str = Form(...)):
         
         logger.info(f"Corrections: {result['total_changes']}, Grammar issues: {len(grammar_issues)}")
         
+        # Debug: Log alternatives
+        for corr in result['corrections']:
+            if 'alternatives' in corr:
+                logger.info(f"Alternatives for '{corr['original']}': {corr['alternatives']}")
+        
         return templates(request, "index.html", {
             "original": text,
             "corrected": result['corrected'],
@@ -229,6 +234,16 @@ async def record_feedback(request: Request):
     checker.record_user_feedback(original_word, corrected_word, accepted)
     return JSONResponse({'status': 'success', 'message': 'Feedback recorded'})
 
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for monitoring"""
+    return JSONResponse({
+        'status': 'healthy',
+        'vocabulary_size': len(checker.words_db),
+        'ml_enabled': checker.use_ml,
+        'timestamp': datetime.now().isoformat()
+    })
+
 @app.get("/stats")
 async def get_stats():
     """Get spell checker statistics"""
@@ -248,7 +263,12 @@ async def get_stats():
 
 if __name__ == "__main__":
     import uvicorn
+    import os
+    
+    # Use PORT from environment (for Render/Railway) or default to 8082 for local
+    port = int(os.environ.get("PORT", 8082))
+    
     print("\n🚀 Starting Afaan Oromo Spell Checker Web Server...")
-    print("📍 Open your browser and go to: http://localhost:8082")
+    print(f"📍 Server running on port: {port}")
     print("💡 Press Ctrl+C to stop the server\n")
-    uvicorn.run(app, host="0.0.0.0", port=8082)
+    uvicorn.run(app, host="0.0.0.0", port=port)
