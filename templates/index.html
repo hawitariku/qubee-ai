@@ -3,7 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Afaan Oromo Spell Checker</title>
+    <title>Afaan Oromo Spell Checker - Free Online Tool</title>
+    <meta name="description" content="Free Afaan Oromo spell checker with AI-powered corrections. Check spelling and grammar for Afaan Oromo text online.">
+    
+    <!-- Google AdSense Code -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4332009994078822"
+     crossorigin="anonymous"></script>
+    
     <style>
         * {
             margin: 0;
@@ -187,6 +193,13 @@
             background: white;
             border-radius: 5px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .alt-btn:hover {
+            background: #4CAF50 !important;
+            color: white !important;
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.4);
         }
         
         .original-word {
@@ -376,6 +389,21 @@
         <h1><span class="emoji">🔤</span>Afaan Oromo Spell Checker</h1>
         <p class="subtitle">AI-powered spelling correction for Afaan Oromo language</p>
         
+        <!-- Ad Placement 1: Top Banner (728x90 or responsive) -->
+        <div style="text-align: center; margin: 20px 0; padding: 10px; background: #f5f5f5; border-radius: 8px;">
+            <!-- Replace with your AdSense code after approval -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                 data-ad-slot="XXXXXXXXXX"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+            <small style="color: #999;">Advertisement</small>
+        </div>
+        
         <form action="/check" method="post">
             <textarea 
                 name="text" 
@@ -429,6 +457,14 @@ Example: 'Ani bishaan dhuguu fedha' or 'Inni gara mana deeme'"
                         <button onclick="recordFeedback('{{ correction.original }}', '{{ correction.corrected }}', true)" class="feedback-btn accept-btn">✓</button>
                         <button onclick="recordFeedback('{{ correction.original }}', '{{ correction.corrected }}', false)" class="feedback-btn reject-btn">✗</button>
                     </div>
+                    {% if correction.alternatives and correction.alternatives|length > 0 %}
+                    <div class="alternatives" style="margin-top: 10px; padding: 10px; background: #e8f5e9; border-radius: 5px; border: 1px solid #4CAF50;">
+                        <small style="color: #2e7d32; font-weight: 700; display: block; margin-bottom: 6px;">📝 Other options:</small>
+                        {% for alt in correction.alternatives %}
+                        <button onclick="useAlternative('{{ correction.original }}', '{{ alt }}')" class="alt-btn" style="margin: 3px; padding: 6px 12px; background: white; border: 2px solid #4CAF50; border-radius: 5px; cursor: pointer; font-size: 0.95em; color: #2e7d32; font-weight: 600; transition: all 0.2s;">{{ alt }}</button>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
                 {% endfor %}
             </div>
@@ -449,6 +485,21 @@ Example: 'Ani bishaan dhuguu fedha' or 'Inni gara mana deeme'"
             {% endif %}
         </div>
         {% endif %}
+        
+        <!-- Ad Placement 2: Middle Banner (before features) -->
+        <div style="text-align: center; margin: 30px 0; padding: 10px; background: #f5f5f5; border-radius: 8px;">
+            <!-- Replace with your AdSense code after approval -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                 data-ad-slot="XXXXXXXXXX"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+            <small style="color: #999;">Advertisement</small>
+        </div>
         
         <div class="features">
             <h3>✨ Features</h3>
@@ -533,6 +584,21 @@ Example: 'Ani bishaan dhuguu fedha' or 'Inni gara mana deeme'"
             .catch(error => {
                 console.error('Error recording feedback:', error);
             });
+        }
+        
+        // Use alternative suggestion
+        function useAlternative(original, alternative) {
+            const correctedText = document.querySelector('.corrected-text');
+            if (correctedText) {
+                // Replace the word in the corrected text
+                const currentText = correctedText.textContent;
+                const newText = currentText.replace(new RegExp('\\b' + original + '\\b', 'gi'), alternative);
+                correctedText.textContent = newText;
+                
+                // Record as feedback
+                recordFeedback(original, alternative, true);
+                showNotification(`Changed to "${alternative}" ✓`, 'success');
+            }
         }
         
         // Show notification
