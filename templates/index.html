@@ -378,12 +378,672 @@
                 padding: 12px;
             }
         }
+        
+        /* Welcome Popup Styles */
+        .welcome-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease-out;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .welcome-popup {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s ease-out;
+            position: relative;
+            margin: auto;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .welcome-popup h2 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .welcome-popup p {
+            color: #666;
+            font-size: 1em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .welcome-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .tab-button {
+            background: #f0f0f0;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+            color: #666;
+        }
+        
+        .tab-button.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .welcome-steps {
+            margin: 20px 0;
+        }
+        
+        .welcome-step {
+            display: flex;
+            align-items: flex-start;
+            margin: 12px 0;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .welcome-step:hover {
+            transform: translateX(5px);
+            background: #e3f2fd;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .step-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1em;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .step-icon {
+            font-size: 1.5em;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .step-text {
+            color: #333;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+        
+        .step-text strong {
+            display: block;
+            margin-bottom: 3px;
+            color: #667eea;
+        }
+        
+        .welcome-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .welcome-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .close-popup {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #f0f0f0;
+            border: none;
+            font-size: 1.3em;
+            cursor: pointer;
+            color: #666;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+            transition: all 0.2s;
+        }
+        
+        .close-popup:hover {
+            background: #e0e0e0;
+            color: #333;
+            transform: rotate(90deg);
+            box-shadow: none;
+        }
+        
+        /* Responsive for mobile */
+        @media (max-width: 600px) {
+            .welcome-popup {
+                padding: 20px;
+                border-radius: 15px;
+            }
+            
+            .welcome-popup h2 {
+                font-size: 1.5em;
+            }
+            
+            .tab-button {
+                padding: 8px 15px;
+                font-size: 0.85em;
+            }
+            
+            .step-number {
+                min-width: 30px;
+                height: 30px;
+                font-size: 0.9em;
+            }
+            
+            .step-text {
+                font-size: 0.9em;
+            }
+            
+            .welcome-button {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
+        }
+        
+        /* Floating particles animation */
+        .particle {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: rgba(102, 126, 234, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 3s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            50% { transform: translateY(-20px) translateX(10px); }
+        }
+        
+        /* Pulse animation for textarea */
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(102, 126, 234, 0); }
+        }
+        
+        textarea.pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Success animation */
+        @keyframes successPop {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .result.show {
+            animation: successPop 0.5s ease-out;
+        }
+        
+        /* Help button */
+        .help-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            z-index: 1000;
+            transition: transform 0.2s;
+        }
+        
+        .help-button:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9em;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Interactive Guide Tooltip */
+        .guide-tooltip {
+            position: absolute;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+            z-index: 9999;
+            max-width: 300px;
+            animation: bounceIn 0.5s ease-out;
+            pointer-events: none;
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .guide-tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            margin-left: -10px;
+            border-width: 10px 10px 0;
+            border-style: solid;
+            border-color: #764ba2 transparent transparent transparent;
+        }
+        
+        .guide-tooltip.top::after {
+            bottom: auto;
+            top: -10px;
+            border-width: 0 10px 10px;
+            border-color: transparent transparent #667eea transparent;
+        }
+        
+        .guide-tooltip h4 {
+            margin: 0 0 8px 0;
+            font-size: 1.1em;
+        }
+        
+        .guide-tooltip p {
+            margin: 0;
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+        
+        .guide-buttons {
+            margin-top: 12px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            pointer-events: auto;
+        }
+        
+        .guide-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .guide-btn:hover {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+        
+        .guide-btn.primary {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .guide-btn.primary:hover {
+            background: #45a049;
+        }
+        
+        /* Highlight element during guide */
+        .guide-highlight {
+            position: relative;
+            z-index: 9998;
+            box-shadow: 0 0 0 4px #667eea, 0 0 0 8px rgba(102, 126, 234, 0.3);
+            border-radius: 10px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 4px #667eea, 0 0 0 8px rgba(102, 126, 234, 0.3); }
+            50% { box-shadow: 0 0 0 6px #667eea, 0 0 0 12px rgba(102, 126, 234, 0.5); }
+        }
+        
+        /* Guide overlay */
+        .guide-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9997;
+            display: none;
+        }
+        
+        .guide-overlay.active {
+            display: block;
+        }
+        
+        /* Professional Dark Mode Toggle */
+        .dark-mode-toggle {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+            background: #ccc;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background 0.3s;
+            border: none;
+            padding: 0;
+        }
+        
+        .dark-mode-toggle::before {
+            content: '☀️';
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1em;
+            transition: opacity 0.3s;
+        }
+        
+        .dark-mode-toggle::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: transform 0.3s, background 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        body.dark-mode .dark-mode-toggle {
+            background: #667eea;
+        }
+        
+        body.dark-mode .dark-mode-toggle::before {
+            content: '🌙';
+            left: auto;
+            right: 5px;
+        }
+        
+        body.dark-mode .dark-mode-toggle::after {
+            transform: translateX(30px);
+            background: #1e1e2f;
+        }
+        
+        .dark-mode-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .dark-mode-label {
+            font-size: 0.9em;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        body.dark-mode .dark-mode-label {
+            color: #aaa;
+        }
+        
+        @media (max-width: 600px) {
+            .dark-mode-label {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Welcome Popup -->
+    <div class="welcome-overlay" id="welcomeOverlay" style="display: none;">
+        <div class="welcome-popup">
+            <button class="close-popup" onclick="closeWelcome()">✕</button>
+            <h2>🎉 Welcome to Afaan Oromo Spell Checker!</h2>
+            <p>Your AI-powered tool for perfect Afaan Oromo writing</p>
+            
+            <!-- Tabs -->
+            <div class="welcome-tabs">
+                <button class="tab-button active" onclick="switchTab('basics')">📚 Basics</button>
+                <button class="tab-button" onclick="switchTab('features')">✨ Features</button>
+                <button class="tab-button" onclick="switchTab('tips')">💡 Tips</button>
+            </div>
+            
+            <!-- Basics Tab -->
+            <div class="tab-content active" id="basics-tab">
+                <div class="welcome-steps">
+                    <div class="welcome-step">
+                        <div class="step-number">1</div>
+                        <div class="step-text">
+                            <strong>Type Your Text</strong>
+                            Type or paste Afaan Oromo text in the text box
+                        </div>
+                    </div>
+                    <div class="welcome-step">
+                        <div class="step-number">2</div>
+                        <div class="step-text">
+                            <strong>Click Check Spelling</strong>
+                            Press the purple button to check your text
+                        </div>
+                    </div>
+                    <div class="welcome-step">
+                        <div class="step-number">3</div>
+                        <div class="step-text">
+                            <strong>Review Corrections</strong>
+                            See all corrections with confidence scores
+                        </div>
+                    </div>
+                    <div class="welcome-step">
+                        <div class="step-number">4</div>
+                        <div class="step-text">
+                            <strong>Accept or Reject</strong>
+                            Click ✓ to accept or ✗ to reject each correction
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Features Tab -->
+            <div class="tab-content" id="features-tab">
+                <div class="welcome-steps">
+                    <div class="welcome-step">
+                        <div class="step-icon">🎯</div>
+                        <div class="step-text">
+                            <strong>Alternative Suggestions</strong>
+                            Click on alternative words to try different corrections
+                        </div>
+                    </div>
+                    <div class="welcome-step">
+                        <div class="step-icon">📊</div>
+                        <div class="step-text">
+                            <strong>Confidence Scores</strong>
+                            Green (80%+) = High confidence<br>
+                            Orange (60-79%) = Medium<br>
+                            Red (<60%) = Low confidence
+                        </div>
+                    </div>
+                    <div class="welcome-step">
+                        <div class="step-icon">💾</div>
+                        <div class="step-text">
+                            <strong>Export Corrections</strong>
+                            Click "Export Corrections" to download your corrected text
+                        </div>
+                    </div>
+                    <div class="welcome-step">
+                        <div class="step-icon">⚠️</div>
+                        <div class="step-text">
+                            <strong>Grammar Suggestions</strong>
+                            See grammar issues and suggestions below corrections
+                        </div>
+                    </div>
+                    <div class="welcome-step">
+                        <div class="step-icon">🌓</div>
+                        <div class="step-text">
+                            <strong>Dark Mode</strong>
+                            Toggle dark mode with the button at the top-right
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tips Tab -->
+            <div class="tab-content" id="tips-tab">
+                <div class="welcome-steps">
+                    <div class="welcome-step">
+                        <div class="step-icon">✍️</div>
+                        <div class="step-text">
+                            <strong>Better Results</strong>
+                            Type complete sentences for better context-aware corrections
+                        </div>
+                    </div>
+                    <div class="welcome-step">
+                        <div class="step-icon">👍</div>
+                        <div class="step-text">
+                            <strong>Help Us Improve</strong>
+                            Accept (✓) or reject (✗) corrections to train the AI
+                        </div>
+                    </div>
+                    <div class="welcome-step">
+                        <div class="step-icon">🔤</div>
+                        <div class="step-text">
+                            <strong>Hudhaa Support</strong>
+                            The checker handles apostrophes (') correctly
+                        </div>
+                    </div>
+                    <div class="welcome-step">
+                        <div class="step-icon">📖</div>
+                        <div class="step-text">
+                            <strong>59,000+ Words</strong>
+                            Powered by Bible corpus and professional vocabulary
+                        </div>
+                    </div>
+                    <div class="welcome-step">
+                        <div class="step-icon">❓</div>
+                        <div class="step-text">
+                            <strong>Need Help?</strong>
+                            Click the help button (❓) at bottom-right anytime
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="welcome-button" onclick="startUsing()">
+                🚀 Start Checking Now!
+            </button>
+            
+            <p style="text-align: center; margin-top: 15px; font-size: 0.85em; color: #999;">
+                <label style="cursor: pointer;">
+                    <input type="checkbox" id="dontShowAgain" style="margin-right: 5px;">
+                    Don't show this again
+                </label>
+            </p>
+        </div>
+    </div>
+    
+    <!-- Floating Help Button -->
+    <button class="help-button tooltip" onclick="showWelcome()">
+        ❓
+        <span class="tooltiptext">Need help? Click here!</span>
+    </button>
+    
+    <!-- Guide Overlay -->
+    <div class="guide-overlay" id="guideOverlay"></div>
+    
     <div class="container">
         <div style="text-align: right; margin-bottom: 10px;">
-            <button onclick="toggleDarkMode()" style="padding: 8px 16px; font-size: 0.9em; cursor: pointer;">🌓 Toggle Dark Mode</button>
+            <div class="dark-mode-container" style="display: inline-flex;">
+                <span class="dark-mode-label">Dark Mode</span>
+                <button class="dark-mode-toggle" onclick="toggleDarkMode()" aria-label="Toggle Dark Mode"></button>
+            </div>
         </div>
         
         <h1><span class="emoji">🔤</span>Afaan Oromo Spell Checker</h1>
@@ -409,7 +1069,7 @@
                 name="text" 
                 placeholder="Type or paste Afaan Oromo text here...
                 
-Example: 'Ani bishaan dhuguu fedha' or 'Inni gara mana deeme'"
+Example: 'Ani bishaan dhuguu barbaada' or 'Inni gara mana deeme'"
             >{% if original %}{{ original }}{% endif %}</textarea>
             
             <div class="button-container">
@@ -530,9 +1190,453 @@ Example: 'Ani bishaan dhuguu fedha' or 'Inni gara mana deeme'"
                 </div>
             </div>
         </div>
+        
+        <!-- Footer with Developer Credit -->
+        <footer style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #e0e0e0; text-align: center; color: #666;">
+            <p style="margin-bottom: 10px; font-size: 0.95em;">
+                <strong>Developed by Hawi Tariku</strong>
+            </p>
+            <p style="font-size: 0.85em; color: #999;">
+                © 2026 Hawi Tariku. All rights reserved.
+            </p>
+            <p style="font-size: 0.85em; margin-top: 10px;">
+                <a href="https://github.com/hawitariku/qubeessaa-ai" target="_blank" style="color: #667eea; text-decoration: none;">
+                    View on GitHub
+                </a>
+            </p>
+        </footer>
     </div>
     
     <script>
+        // Tab switching for welcome popup
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        // Welcome popup management
+        function showWelcome() {
+            document.getElementById('welcomeOverlay').style.display = 'flex';
+            createParticles();
+            // Mark as seen immediately when shown (won't show again)
+            localStorage.setItem('welcomeShown', 'true');
+        }
+        
+        function closeWelcome() {
+            const dontShow = document.getElementById('dontShowAgain').checked;
+            if (dontShow) {
+                localStorage.setItem('hideWelcome', 'true');
+            }
+            document.getElementById('welcomeOverlay').style.display = 'none';
+        }
+        
+        function startUsing() {
+            closeWelcome();
+            // Start interactive guide
+            setTimeout(() => {
+                startInteractiveGuide();
+            }, 500);
+        }
+        
+        // Check if should show welcome popup
+        window.addEventListener('load', function() {
+            const welcomeShown = localStorage.getItem('welcomeShown');
+            const hideWelcome = localStorage.getItem('hideWelcome');
+            
+            // Only show welcome if it has NEVER been shown before
+            if (!welcomeShown && !hideWelcome) {
+                setTimeout(() => {
+                    showWelcome();
+                }, 500);
+            }
+            
+            // If there are results and advanced guide not completed, start it
+            const hasResults = document.querySelector('.result');
+            if (hasResults && !localStorage.getItem('advancedGuideCompleted')) {
+                setTimeout(() => {
+                    startAdvancedGuide();
+                }, 1000);
+            }
+        });
+        
+        // Interactive Guide System
+        let currentGuideStep = 0;
+        let guideTooltip = null;
+        
+        const guideSteps = [
+            {
+                element: 'textarea',
+                title: '📝 Step 1: Type Your Text',
+                text: 'Type or paste your Afaan Oromo text here. Try the example text!',
+                position: 'bottom',
+                action: () => {
+                    const textarea = document.querySelector('textarea');
+                    textarea.focus();
+                    textarea.classList.add('guide-highlight');
+                }
+            },
+            {
+                element: 'button[type="submit"]',
+                title: '🔍 Step 2: Check Spelling',
+                text: 'Click this button to check your text for spelling errors. The next steps will appear after you check your text!',
+                position: 'bottom',
+                action: () => {
+                    document.querySelector('textarea').classList.remove('guide-highlight');
+                    document.querySelector('button[type="submit"]').classList.add('guide-highlight');
+                }
+            },
+            {
+                element: '.dark-mode-toggle',
+                title: '🌓 Step 3: Dark Mode',
+                text: 'Toggle between light and dark themes. The sun ☀️ icon means light mode, moon 🌙 means dark mode. Try it now!',
+                position: 'bottom',
+                action: () => {
+                    document.querySelector('button[type="submit"]').classList.remove('guide-highlight');
+                    const darkModeBtn = document.querySelector('.dark-mode-toggle');
+                    darkModeBtn.classList.add('guide-highlight');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            },
+            {
+                element: '.help-button',
+                title: '❓ Step 4: Need Help Anytime?',
+                text: 'Click this button anytime to see the welcome guide again. After you check your spelling, you\'ll see more features like corrections, alternatives, and export options!',
+                position: 'top',
+                action: () => {
+                    const darkModeBtn = document.querySelector('.dark-mode-toggle');
+                    if (darkModeBtn) darkModeBtn.classList.remove('guide-highlight');
+                    const helpBtn = document.querySelector('.help-button');
+                    helpBtn.classList.add('guide-highlight');
+                }
+            }
+        ];
+        
+        // Advanced guide steps (shown after spell check)
+        const advancedGuideSteps = [
+            {
+                element: '.result',
+                title: '✅ Review Results',
+                text: 'Your corrected text appears here with all changes highlighted.',
+                position: 'top',
+                action: () => {
+                    const result = document.querySelector('.result');
+                    if (result) {
+                        result.classList.add('guide-highlight');
+                        result.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+            },
+            {
+                element: '.feedback-btn',
+                title: '� Accept or Reject',
+                text: 'Click ✓ to accept or ✗ to reject each correction. This helps improve the AI!',
+                position: 'top',
+                action: () => {
+                    const result = document.querySelector('.result');
+                    if (result) result.classList.remove('guide-highlight');
+                    const feedbackBtn = document.querySelector('.feedback-btn');
+                    if (feedbackBtn) {
+                        feedbackBtn.parentElement.classList.add('guide-highlight');
+                        feedbackBtn.parentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+            },
+            {
+                element: '.alt-btn',
+                title: '💡 Try Alternatives',
+                text: 'Click on alternative suggestions to try different corrections.',
+                position: 'top',
+                action: () => {
+                    const feedbackBtns = document.querySelector('.feedback-buttons');
+                    if (feedbackBtns) feedbackBtns.classList.remove('guide-highlight');
+                    const altBtn = document.querySelector('.alt-btn');
+                    if (altBtn) {
+                        altBtn.parentElement.classList.add('guide-highlight');
+                        altBtn.parentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+            },
+            {
+                element: 'button[onclick="exportCorrections()"]',
+                title: '💾 Export Results',
+                text: 'Download your corrected text as a file for later use.',
+                position: 'top',
+                action: () => {
+                    const alternatives = document.querySelector('.alternatives');
+                    if (alternatives) alternatives.classList.remove('guide-highlight');
+                    const exportBtn = document.querySelector('button[onclick="exportCorrections()"]');
+                    if (exportBtn) {
+                        exportBtn.classList.add('guide-highlight');
+                        exportBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+            }
+        ];
+        
+        function startInteractiveGuide() {
+            // Only start if not completed before
+            if (localStorage.getItem('basicGuideCompleted')) return;
+            
+            currentGuideStep = 0;
+            document.getElementById('guideOverlay').classList.add('active');
+            showGuideStep(0);
+        }
+        
+        function showGuideStep(stepIndex) {
+            if (stepIndex >= guideSteps.length) {
+                endGuide();
+                return;
+            }
+            
+            const step = guideSteps[stepIndex];
+            const element = document.querySelector(step.element);
+            
+            if (!element) {
+                // Skip to next step if element not found
+                showGuideStep(stepIndex + 1);
+                return;
+            }
+            
+            // Execute step action
+            if (step.action) step.action();
+            
+            // Remove old tooltip
+            if (guideTooltip) {
+                guideTooltip.remove();
+            }
+            
+            // Create new tooltip
+            guideTooltip = document.createElement('div');
+            guideTooltip.className = 'guide-tooltip ' + step.position;
+            guideTooltip.innerHTML = `
+                <h4>${step.title}</h4>
+                <p>${step.text}</p>
+                <div class="guide-buttons">
+                    <button class="guide-btn" onclick="skipGuide()">Skip Tour</button>
+                    ${stepIndex < guideSteps.length - 1 ? 
+                        '<button class="guide-btn primary" onclick="nextGuideStep()">Next →</button>' :
+                        '<button class="guide-btn primary" onclick="endGuide()">Finish! 🎉</button>'
+                    }
+                </div>
+            `;
+            
+            document.body.appendChild(guideTooltip);
+            
+            // Position tooltip
+            const rect = element.getBoundingClientRect();
+            const tooltipRect = guideTooltip.getBoundingClientRect();
+            
+            if (step.position === 'bottom') {
+                guideTooltip.style.top = (rect.bottom + window.scrollY + 15) + 'px';
+                guideTooltip.style.left = (rect.left + rect.width / 2 - tooltipRect.width / 2) + 'px';
+            } else {
+                guideTooltip.style.top = (rect.top + window.scrollY - tooltipRect.height - 15) + 'px';
+                guideTooltip.style.left = (rect.left + rect.width / 2 - tooltipRect.width / 2) + 'px';
+            }
+            
+            currentGuideStep = stepIndex;
+        }
+        
+        // Start advanced guide when results appear
+        function startAdvancedGuide() {
+            if (localStorage.getItem('advancedGuideCompleted')) return;
+            
+            setTimeout(() => {
+                showAdvancedGuideStep(0);
+            }, 1000);
+        }
+        
+        function showAdvancedGuideStep(stepIndex) {
+            if (stepIndex >= advancedGuideSteps.length) {
+                endAdvancedGuide();
+                return;
+            }
+            
+            const step = advancedGuideSteps[stepIndex];
+            const element = document.querySelector(step.element);
+            
+            if (!element) {
+                // Skip to next step if element not found
+                showAdvancedGuideStep(stepIndex + 1);
+                return;
+            }
+            
+            // Execute step action
+            if (step.action) step.action();
+            
+            // Remove old tooltip
+            if (guideTooltip) {
+                guideTooltip.remove();
+            }
+            
+            // Create new tooltip
+            guideTooltip = document.createElement('div');
+            guideTooltip.className = 'guide-tooltip ' + step.position;
+            guideTooltip.innerHTML = `
+                <h4>${step.title}</h4>
+                <p>${step.text}</p>
+                <div class="guide-buttons">
+                    <button class="guide-btn" onclick="skipAdvancedGuide()">Skip</button>
+                    ${stepIndex < advancedGuideSteps.length - 1 ? 
+                        '<button class="guide-btn primary" onclick="nextAdvancedGuideStep()">Next →</button>' :
+                        '<button class="guide-btn primary" onclick="endAdvancedGuide()">Got it! 🎉</button>'
+                    }
+                </div>
+            `;
+            
+            document.body.appendChild(guideTooltip);
+            
+            // Show overlay
+            document.getElementById('guideOverlay').classList.add('active');
+            
+            // Position tooltip
+            const rect = element.getBoundingClientRect();
+            const tooltipRect = guideTooltip.getBoundingClientRect();
+            
+            if (step.position === 'bottom') {
+                guideTooltip.style.top = (rect.bottom + window.scrollY + 15) + 'px';
+                guideTooltip.style.left = (rect.left + rect.width / 2 - tooltipRect.width / 2) + 'px';
+            } else {
+                guideTooltip.style.top = (rect.top + window.scrollY - tooltipRect.height - 15) + 'px';
+                guideTooltip.style.left = (rect.left + rect.width / 2 - tooltipRect.width / 2) + 'px';
+            }
+            
+            currentGuideStep = stepIndex;
+        }
+        
+        function nextAdvancedGuideStep() {
+            showAdvancedGuideStep(currentGuideStep + 1);
+        }
+        
+        function skipAdvancedGuide() {
+            if (confirm('Skip the results tour?')) {
+                endAdvancedGuide();
+            }
+        }
+        
+        function endAdvancedGuide() {
+            // Remove tooltip
+            if (guideTooltip) {
+                guideTooltip.remove();
+                guideTooltip = null;
+            }
+            
+            // Remove all highlights
+            document.querySelectorAll('.guide-highlight').forEach(el => {
+                el.classList.remove('guide-highlight');
+            });
+            
+            // Hide overlay
+            document.getElementById('guideOverlay').classList.remove('active');
+            
+            // Show completion message
+            showNotification('🎉 You\'re now a pro! Enjoy using the spell checker!', 'success');
+            createParticles();
+            
+            // Mark advanced guide as completed
+            localStorage.setItem('advancedGuideCompleted', 'true');
+        }
+        
+        function nextGuideStep() {
+            showGuideStep(currentGuideStep + 1);
+        }
+        
+        function skipGuide() {
+            if (confirm('Are you sure you want to skip the tour?')) {
+                endGuide();
+            }
+        }
+        
+        function endGuide() {
+            // Remove tooltip
+            if (guideTooltip) {
+                guideTooltip.remove();
+                guideTooltip = null;
+            }
+            
+            // Remove all highlights
+            document.querySelectorAll('.guide-highlight').forEach(el => {
+                el.classList.remove('guide-highlight');
+            });
+            
+            // Hide overlay
+            document.getElementById('guideOverlay').classList.remove('active');
+            
+            // Show completion message
+            showNotification('🎉 Tour complete! You\'re ready to use the spell checker!', 'success');
+            createParticles();
+            
+            // Mark basic guide as completed
+            localStorage.setItem('basicGuideCompleted', 'true');
+        }
+        
+        // Auto-advance guide when user performs actions
+        document.addEventListener('click', function(e) {
+            if (!guideTooltip) return;
+            
+            // If user clicks the highlighted element, advance to next step
+            if (e.target.classList.contains('guide-highlight') || 
+                e.target.closest('.guide-highlight')) {
+                setTimeout(() => {
+                    if (currentGuideStep < guideSteps.length - 1) {
+                        nextGuideStep();
+                    }
+                }, 500);
+            }
+        });
+        
+        
+        // Create floating particles
+        function createParticles() {
+            const colors = ['#667eea', '#764ba2', '#4CAF50', '#2196F3'];
+            for (let i = 0; i < 10; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                particle.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                document.body.appendChild(particle);
+                
+                // Remove after animation
+                setTimeout(() => particle.remove(), 5000);
+            }
+        }
+        
+        // Add success animation to results
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.addedNodes.length) {
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.classList && node.classList.contains('result')) {
+                            node.classList.add('show');
+                            createParticles();
+                            // Start advanced guide when results appear
+                            startAdvancedGuide();
+                        }
+                    });
+                }
+            });
+        });
+        
+        // Observe the container for new results
+        window.addEventListener('load', function() {
+            const container = document.querySelector('.container');
+            if (container) {
+                observer.observe(container, { childList: true, subtree: true });
+            }
+        });
+        
         // Dark mode toggle
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
@@ -559,6 +1663,8 @@ Example: 'Ani bishaan dhuguu fedha' or 'Inni gara mana deeme'"
             a.download = 'corrections.txt';
             a.click();
             URL.revokeObjectURL(url);
+            
+            showNotification('Corrections exported! 💾', 'success');
         }
         
         // Record user feedback
@@ -598,6 +1704,7 @@ Example: 'Ani bishaan dhuguu fedha' or 'Inni gara mana deeme'"
                 // Record as feedback
                 recordFeedback(original, alternative, true);
                 showNotification(`Changed to "${alternative}" ✓`, 'success');
+                createParticles();
             }
         }
         
@@ -624,6 +1731,19 @@ Example: 'Ani bishaan dhuguu fedha' or 'Inni gara mana deeme'"
                 notif.style.transition = 'opacity 0.3s';
                 setTimeout(() => notif.remove(), 300);
             }, 2000);
+        }
+        
+        // Add typing indicator
+        let typingTimer;
+        const textarea = document.querySelector('textarea');
+        if (textarea) {
+            textarea.addEventListener('input', function() {
+                clearTimeout(typingTimer);
+                this.style.borderColor = '#667eea';
+                typingTimer = setTimeout(() => {
+                    this.style.borderColor = '#e0e0e0';
+                }, 1000);
+            });
         }
     </script>
 </body>
