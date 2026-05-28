@@ -155,8 +155,8 @@ class MLEnhancedSpellChecker:
         # Boost words from user feedback
         self._apply_user_feedback_boosts()
         
-        # Optimize vocabulary
-        self.optimize_vocabulary(min_frequency=2)
+        # Optimize vocabulary - remove rare words (likely typos)
+        self.optimize_vocabulary(min_frequency=5)
         
         print(f"{'='*60}")
 
@@ -572,6 +572,71 @@ class MLEnhancedSpellChecker:
         
         return suggestions if suggestions else [word_lower]
 
+    def get_alternatives_by_frequency(self, word, top_n=5):
+        """Get top N alternatives sorted by FREQUENCY ONLY (for user suggestions)"""
+        word_lower = word.lower()
+        
+        # If word is correct, return empty
+        if word_lower in self.words_db:
+            return []
+        
+        all_candidates = []
+        
+        # Get edit distance 1 and 2 candidates
+        edits1 = self._get_edits(word_lower)
+        candidates1 = self._known(edits1)
+        
+        edits2 = set(e2 for e1 in edits1 for e2 in self._get_edits(e1))
+        candidates2 = self._known(edits2)
+        
+        all_candidates = candidates1.union(candidates2)
+        
+        if not all_candidates:
+            return []
+        
+        # FILTER: Remove fragments and invalid words
+        valid_candidates = []
+        for cand in all_candidates:
+            # Skip very short words (likely fragments)
+            if len(cand) < 4:  # Increased from 3 to 4
+                continue
+            
+            # Skip words that are just single letters repeated (aa, kk, etc.)
+            if len(set(cand)) == 1:
+                continue
+            
+            # Skip words with only 2 unique characters (kaa, kka, etc.)
+            if len(set(cand)) <= 2:
+                continue
+            
+            # Must have at least one vowel
+            if not any(v in cand for v in 'aeiou'):
+                continue
+            
+            # Must have at least one consonant
+            consonants = set('bcdfghjklmnpqrstvwxyz')
+            if not any(c in cand for c in consonants):
+                continue
+            
+            # Must have reasonable frequency (at least 50 occurrences for quality)
+            if self.words_db[cand] < 50:
+                continue
+            
+            # Skip words that are mostly repeated characters (kaaa, ammm, etc.)
+            char_counts = {}
+            for c in cand:
+                char_counts[c] = char_counts.get(c, 0) + 1
+            max_repeat = max(char_counts.values())
+            if max_repeat > len(cand) * 0.6:  # More than 60% is one character
+                continue
+            
+            valid_candidates.append(cand)
+        
+        # Sort by FREQUENCY ONLY (highest first)
+        sorted_candidates = sorted(valid_candidates, key=lambda x: self.words_db[x], reverse=True)
+        
+        return sorted_candidates[:top_n]
+
     def correct_word(self, word):
         """Corrects a single word using balanced scoring"""
         word_lower = word.lower()
@@ -587,20 +652,26 @@ class MLEnhancedSpellChecker:
         if word_lower in self.words_db:
             return word
         
-        candidates = self._known(self._get_edits(word_lower))
+        # IMPROVED: Collect ALL candidates (edit distance 1 AND 2) and score them all
+        all_candidates = set()
         
-        if not candidates:
-            candidates = self._known(e2 for e1 in self._get_edits(word_lower) 
-                                    for e2 in self._get_edits(e1))
+        # Edit distance 1 candidates
+        edits1 = self._get_edits(word_lower)
+        candidates1 = self._known(edits1)
+        all_candidates.update(candidates1)
         
-        if not candidates:
+        # Edit distance 2 candidates (always check, don't skip!)
+        edits2 = set(e2 for e1 in edits1 for e2 in self._get_edits(e1))
+        candidates2 = self._known(edits2)
+        all_candidates.update(candidates2)
+        
+        if not all_candidates:
             return word
         
-        # Use balanced scoring instead of just frequency
-        best_score = -1
-        best_candidate = word
+        # Score ALL candidates and pick the best
+        scored_candidates = []
         
-        for candidate in candidates:
+        for candidate in all_candidates:
             # 1. EDIT DISTANCE SCORE (40% weight)
             edit_dist = self._calculate_edit_distance(word_lower, candidate)
             if edit_dist == 0:
@@ -617,7 +688,7 @@ class MLEnhancedSpellChecker:
             # 2. PHONETIC SIMILARITY (30% weight)
             phonetic_score = self._phonetic_similarity(word_lower, candidate) * 100
             
-            # 3. FREQUENCY SCORE (20% weight) - REDUCED!
+            # 3. FREQUENCY SCORE (20% weight)
             freq = self.words_db[candidate]
             max_freq = max(self.words_db.values()) if self.words_db else 1
             freq_score = (freq / max_freq) * 100
@@ -636,17 +707,28 @@ class MLEnhancedSpellChecker:
             if word_lower.count('ee') > 0 and candidate.count('ee') > 0:
                 pattern_score += 20
             
+            # Geminate consonant bonus (kk, tt, pp, etc.)
+            geminate_pairs = ['kk', 'tt', 'pp', 'bb', 'dd', 'ff', 'gg', 'll', 'mm', 'nn', 'rr', 'ss']
+            for gem in geminate_pairs:
+                if gem in candidate:
+                    pattern_score += 15
+            
             # COMBINED SCORE with balanced weights
+            # Prioritize phonetic similarity and edit distance over frequency
             total_score = (
-                edit_score * 0.40 +      # Edit distance (PRIMARY)
-                phonetic_score * 0.30 +  # Phonetic similarity
-                freq_score * 0.20 +      # Frequency (REDUCED)
+                edit_score * 0.35 +      # Edit distance
+                phonetic_score * 0.35 +  # Phonetic similarity (INCREASED)
+                freq_score * 0.20 +      # Frequency
                 pattern_score * 0.10     # Pattern matching
             )
             
-            if total_score > best_score:
-                best_score = total_score
-                best_candidate = candidate
+            scored_candidates.append((candidate, total_score, edit_dist, freq))
+        
+        # Sort by score (highest first), then by frequency as tiebreaker
+        scored_candidates.sort(key=lambda x: (x[1], x[3]), reverse=True)
+        
+        # Get the best candidate
+        best_candidate = scored_candidates[0][0] if scored_candidates else word
         
         # Cache result
         self.correction_cache[cache_key] = best_candidate
@@ -948,8 +1030,21 @@ class MLEnhancedSpellChecker:
         return corrected
     
     def get_detailed_corrections(self, sentence):
-        """Get detailed correction information"""
+        """Get detailed correction information with alternative suggestions"""
         corrected, corrections = self.correct_sentence_with_context(sentence)
+        
+        # Add alternative suggestions for each correction (sorted by FREQUENCY)
+        for correction in corrections:
+            original_word = correction['original'].lower().strip('.,!?;:')
+            corrected_word = correction['corrected'].lower().strip('.,!?;:')
+            if original_word:
+                # Get top 6 alternatives sorted by FREQUENCY (we'll remove the chosen one)
+                alternatives = self.get_alternatives_by_frequency(original_word, top_n=6)
+                # Remove the chosen correction from alternatives
+                if corrected_word in alternatives:
+                    alternatives.remove(corrected_word)
+                correction['alternatives'] = alternatives[:5]  # Top 5 after removing chosen
+        
         return {
             'original': sentence,
             'corrected': corrected,

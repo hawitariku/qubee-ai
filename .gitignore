@@ -57,6 +57,8 @@ oromo_corpus.txt.bak
 temp_pdfs/
 *.tmp
 *.temp
+test_web_interface.html
+new.text
 
 # Model files (large)
 *.bin
@@ -87,7 +89,6 @@ Thumbs.db
 # Project specific
 gaz_book.pdf
 gaz_book_extracted.txt
-new.text
 
 # Batch processing outputs
 batch_results/

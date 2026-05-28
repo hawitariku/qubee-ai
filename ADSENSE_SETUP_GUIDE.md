@@ -41,7 +41,7 @@ Before you can use AdSense, your app must be publicly accessible online.
 - ✅ Must be 18+ years old
 
 ### **Sign Up Process:**
-1. Go to https://www.google.com/adsense
+1. Go to  
 2. Click "Get Started"
 3. Enter your website URL (e.g., `https://qubee-ai.onrender.com`)
 4. Fill in your details:
