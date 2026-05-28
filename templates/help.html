@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help & Guide - Qubeessaa AI | Afaan Oromo Spell Checker</title>
+    <meta name="description" content="How to use the Qubeessaa AI Afaan Oromo spell checker. Step-by-step guide, tips for writing in Afaan Oromo, and common spelling rules.">
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4332009994078822"
+     crossorigin="anonymous"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; color: #333;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: sticky; top: 0; z-index: 5000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .navbar-inner {
+            max-width: 900px; margin: 0 auto;
+            display: flex; align-items: center;
+            justify-content: space-between;
+            padding: 0 20px; flex-wrap: wrap;
+        }
+        .navbar-brand {
+            color: white; font-weight: 700; font-size: 1.1em;
+            text-decoration: none; padding: 14px 0;
+        }
+        .navbar-links { display: flex; gap: 5px; flex-wrap: wrap; }
+        .navbar-links a {
+            color: rgba(255,255,255,0.85); text-decoration: none;
+            padding: 14px 14px; font-size: 0.95em;
+            transition: color 0.2s, background 0.2s; border-radius: 4px;
+        }
+        .navbar-links a:hover, .navbar-links a.active {
+            color: white; background: rgba(255,255,255,0.15);
+        }
+
+        .container {
+            max-width: 860px; margin: 30px auto 40px;
+            background: white; border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 50px;
+        }
+
+        .page-header {
+            text-align: center; margin-bottom: 40px;
+            padding-bottom: 30px; border-bottom: 2px solid #f0f0f0;
+        }
+        .page-header h1 { font-size: 2.2em; color: #667eea; margin-bottom: 10px; }
+        .page-header p { color: #666; font-size: 1.1em; line-height: 1.6; }
+
+        h2 { color: #667eea; font-size: 1.4em; margin: 35px 0 12px; }
+        h3 { color: #444; font-size: 1.1em; margin: 20px 0 8px; }
+        p { color: #555; line-height: 1.8; margin-bottom: 15px; font-size: 1em; }
+
+        /* Step cards */
+        .steps { margin: 20px 0; }
+        .step-card {
+            display: flex; gap: 20px; align-items: flex-start;
+            padding: 20px; margin-bottom: 15px;
+            background: #f8f9fa; border-radius: 12px;
+            border: 1px solid #eee;
+            transition: box-shadow 0.2s;
+        }
+        .step-card:hover { box-shadow: 0 4px 15px rgba(102,126,234,0.15); }
+        .step-num {
+            min-width: 45px; height: 45px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 1.2em; flex-shrink: 0;
+        }
+        .step-body h3 { margin: 0 0 6px; color: #333; font-size: 1.05em; }
+        .step-body p { margin: 0; color: #666; font-size: 0.95em; line-height: 1.6; }
+
+        /* Tips */
+        .tip-box {
+            background: #e8f5e9; border-left: 4px solid #4CAF50;
+            padding: 15px 20px; border-radius: 8px; margin: 15px 0;
+        }
+        .tip-box p { margin: 0; color: #2e7d32; }
+
+        .warning-box {
+            background: #fff3e0; border-left: 4px solid #FF9800;
+            padding: 15px 20px; border-radius: 8px; margin: 15px 0;
+        }
+        .warning-box p { margin: 0; color: #e65100; }
+
+        /* Spelling rules table */
+        .rules-table {
+            width: 100%; border-collapse: collapse; margin: 20px 0;
+        }
+        .rules-table th {
+            background: #667eea; color: white;
+            padding: 12px 15px; text-align: left; font-size: 0.95em;
+        }
+        .rules-table td {
+            padding: 10px 15px; border-bottom: 1px solid #eee;
+            font-size: 0.95em; color: #555; line-height: 1.6;
+        }
+        .rules-table tr:nth-child(even) td { background: #f9f9f9; }
+        .correct { color: #4CAF50; font-weight: 600; }
+        .incorrect { color: #f44336; text-decoration: line-through; }
+
+        /* FAQ */
+        .faq-item {
+            border: 1px solid #eee; border-radius: 10px;
+            margin-bottom: 12px; overflow: hidden;
+        }
+        .faq-question {
+            padding: 15px 20px; background: #f8f9fa;
+            font-weight: 600; color: #333; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+            user-select: none;
+        }
+        .faq-question:hover { background: #f0f4ff; }
+        .faq-answer {
+            padding: 0 20px; max-height: 0; overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            color: #555; line-height: 1.7; font-size: 0.95em;
+        }
+        .faq-answer.open { max-height: 300px; padding: 15px 20px; }
+        .faq-icon { font-size: 1.2em; transition: transform 0.3s; }
+        .faq-icon.open { transform: rotate(45deg); }
+
+        /* CTA */
+        .cta-box {
+            text-align: center; padding: 35px;
+            background: linear-gradient(135deg, #f0f4ff 0%, #f8f0ff 100%);
+            border-radius: 12px; margin: 35px 0;
+        }
+        .cta-box h3 { color: #667eea; font-size: 1.3em; margin-bottom: 10px; }
+        .cta-box p { color: #666; margin-bottom: 20px; }
+        .cta-btn {
+            display: inline-block; padding: 14px 35px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; text-decoration: none; border-radius: 50px;
+            font-size: 1.05em; font-weight: 600;
+            box-shadow: 0 4px 15px rgba(102,126,234,0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102,126,234,0.6);
+        }
+
+        footer {
+            margin-top: 50px; padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+            text-align: center; color: #999;
+        }
+        footer nav { margin-bottom: 15px; }
+        footer nav a {
+            color: #667eea; text-decoration: none;
+            margin: 0 10px; font-size: 0.9em;
+        }
+        footer p { font-size: 0.85em; }
+
+        @media (max-width: 600px) {
+            .container { padding: 25px 20px; margin: 15px; }
+            .page-header h1 { font-size: 1.7em; }
+            .step-card { flex-direction: column; gap: 12px; }
+            .navbar-links a { padding: 10px 8px; font-size: 0.85em; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="navbar-inner">
+        <a href="/" class="navbar-brand">🔤 Qubeessaa AI</a>
+        <div class="navbar-links">
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/help" class="active">Help</a>
+            <a href="/privacy">Privacy</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+
+    <div class="page-header">
+        <h1>📖 Help & User Guide</h1>
+        <p>Everything you need to know to use Qubeessaa AI effectively, plus tips for writing correctly in Afaan Oromo.</p>
+    </div>
+
+    <!-- HOW TO USE -->
+    <h2>How to Use the Spell Checker</h2>
+    <p>Using Qubeessaa AI is simple. Follow these steps to check your Afaan Oromo text:</p>
+
+    <div class="steps">
+        <div class="step-card">
+            <div class="step-num">1</div>
+            <div class="step-body">
+                <h3>Open the Spell Checker</h3>
+                <p>Go to the <a href="/" style="color:#667eea;">Home page</a>. You will see a large text input area in the center of the page.</p>
+            </div>
+        </div>
+        <div class="step-card">
+            <div class="step-num">2</div>
+            <div class="step-body">
+                <h3>Type or Paste Your Text</h3>
+                <p>Type your Afaan Oromo text directly into the box, or copy and paste text from another document. You can enter up to 10,000 characters at a time.</p>
+            </div>
+        </div>
+        <div class="step-card">
+            <div class="step-num">3</div>
+            <div class="step-body">
+                <h3>Click "Check Spelling"</h3>
+                <p>Press the purple "Check Spelling" button. The AI will analyze your text and display corrections within seconds.</p>
+            </div>
+        </div>
+        <div class="step-card">
+            <div class="step-num">4</div>
+            <div class="step-body">
+                <h3>Review the Corrections</h3>
+                <p>The corrected text appears at the top of the results. Below it, each correction is listed showing the original word (in red, crossed out) and the suggested correction (in green).</p>
+            </div>
+        </div>
+        <div class="step-card">
+            <div class="step-num">5</div>
+            <div class="step-body">
+                <h3>Accept or Reject Each Correction</h3>
+                <p>Click the green ✓ button to accept a correction, or the red ✗ button to reject it. Your feedback helps improve the AI for everyone.</p>
+            </div>
+        </div>
+        <div class="step-card">
+            <div class="step-num">6</div>
+            <div class="step-body">
+                <h3>Try Alternative Suggestions</h3>
+                <p>If you don't like the suggested correction, look for the "Other options" section below each correction. Click any alternative word to use it instead.</p>
+            </div>
+        </div>
+        <div class="step-card">
+            <div class="step-num">7</div>
+            <div class="step-body">
+                <h3>Export Your Corrected Text</h3>
+                <p>Click the "Export Corrections" button to download your original and corrected text as a .txt file for use in other applications.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- UNDERSTANDING CONFIDENCE SCORES -->
+    <h2>Understanding Confidence Scores</h2>
+    <p>Each correction comes with a confidence score showing how certain the AI is about the suggestion:</p>
+
+    <div class="steps">
+        <div class="step-card" style="border-left: 4px solid #4CAF50;">
+            <div class="step-num" style="background: #4CAF50;">80+</div>
+            <div class="step-body">
+                <h3>High Confidence (Green, 80–100%)</h3>
+                <p>The AI is very confident this is the correct word. The correction is almost certainly right.</p>
+            </div>
+        </div>
+        <div class="step-card" style="border-left: 4px solid #FF9800;">
+            <div class="step-num" style="background: #FF9800;">60</div>
+            <div class="step-body">
+                <h3>Medium Confidence (Orange, 60–79%)</h3>
+                <p>The AI thinks this is likely correct, but you should review it. Check the alternatives too.</p>
+            </div>
+        </div>
+        <div class="step-card" style="border-left: 4px solid #f44336;">
+            <div class="step-num" style="background: #f44336;">&lt;60</div>
+            <div class="step-body">
+                <h3>Low Confidence (Red, below 60%)</h3>
+                <p>The AI is uncertain. Review this correction carefully and consider the alternative suggestions.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- AFAAN OROMO SPELLING TIPS -->
+    <h2>Afaan Oromo Spelling Tips</h2>
+    <p>Here are the most common spelling rules in Afaan Oromo that writers often get wrong:</p>
+
+    <h3>1. Long Vowels (Sagalee Dheeraa)</h3>
+    <p>In Afaan Oromo, vowel length changes the meaning of a word. Long vowels are written by doubling the letter.</p>
+    <table class="rules-table">
+        <thead>
+            <tr><th>Short Vowel</th><th>Long Vowel</th><th>Example</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>a</td><td>aa</td><td><span class="incorrect">mana</span> vs <span class="correct">maana</span> (different meanings)</td></tr>
+            <tr><td>e</td><td>ee</td><td><span class="correct">deeme</span> = went, <span class="correct">deemee</span> = having gone</td></tr>
+            <tr><td>i</td><td>ii</td><td><span class="correct">bii</span> = debt, <span class="correct">bi</span> = different meaning</td></tr>
+            <tr><td>o</td><td>oo</td><td><span class="correct">boo'aa</span> = cry, <span class="correct">boo</span> = different</td></tr>
+            <tr><td>u</td><td>uu</td><td><span class="correct">dhuguu</span> = to drink</td></tr>
+        </tbody>
+    </table>
+
+    <div class="tip-box">
+        <p>💡 <strong>Tip:</strong> Always double-check vowel length. Writing <em>bishaan</em> (water) as <em>bisaan</em> is a very common mistake — the 'h' and double vowel are both important.</p>
+    </div>
+
+    <h3>2. The Glottal Stop — Hudhaa (')</h3>
+    <p>The apostrophe (') represents a glottal stop called <em>hudhaa</em> in Afaan Oromo. It is a real consonant sound and changes word meaning.</p>
+    <table class="rules-table">
+        <thead>
+            <tr><th>Without Hudhaa</th><th>With Hudhaa</th><th>Meaning</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>a</td><td>a'</td><td>Different words entirely</td></tr>
+            <tr><td>boo</td><td>boo'aa</td><td>boo'aa = to cry</td></tr>
+        </tbody>
+    </table>
+
+    <h3>3. Common Digraphs</h3>
+    <p>Afaan Oromo uses two-letter combinations (digraphs) to represent single sounds. These must be written correctly:</p>
+    <table class="rules-table">
+        <thead>
+            <tr><th>Digraph</th><th>Sound</th><th>Example Word</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>dh</strong></td><td>Retroflex d</td><td><span class="correct">dhuguu</span> (to drink), <span class="correct">dhufa</span> (comes)</td></tr>
+            <tr><td><strong>ch</strong></td><td>ch sound</td><td><span class="correct">chakkaa</span></td></tr>
+            <tr><td><strong>ny</strong></td><td>ny sound</td><td><span class="correct">nyaata</span> (food)</td></tr>
+            <tr><td><strong>ph</strong></td><td>ph sound</td><td><span class="correct">phaaroo</span></td></tr>
+            <tr><td><strong>sh</strong></td><td>sh sound</td><td><span class="correct">shani</span> (five)</td></tr>
+            <tr><td><strong>ts</strong></td><td>ts sound</td><td><span class="correct">tsaatii</span></td></tr>
+        </tbody>
+    </table>
+
+    <div class="warning-box">
+        <p>⚠️ <strong>Common mistake:</strong> Writing <em>d</em> instead of <em>dh</em> changes the word completely. For example, <em>dhufa</em> (comes) vs <em>dufa</em> (different word).</p>
+    </div>
+
+    <h3>4. Common Words and Correct Spellings</h3>
+    <table class="rules-table">
+        <thead>
+            <tr><th>Incorrect</th><th>Correct</th><th>Meaning (English)</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><span class="incorrect">bisaan</span></td><td><span class="correct">bishaan</span></td><td>water</td></tr>
+            <tr><td><span class="incorrect">nyata</span></td><td><span class="correct">nyaata</span></td><td>food</td></tr>
+            <tr><td><span class="incorrect">mana</span></td><td><span class="correct">mana</span></td><td>house (check context)</td></tr>
+            <tr><td><span class="incorrect">barbaada</span></td><td><span class="correct">barbaada</span></td><td>wants/needs</td></tr>
+            <tr><td><span class="incorrect">deeme</span></td><td><span class="correct">deeme</span></td><td>went</td></tr>
+            <tr><td><span class="incorrect">nama</span></td><td><span class="correct">nama</span></td><td>person</td></tr>
+            <tr><td><span class="incorrect">gaarii</span></td><td><span class="correct">gaarii</span></td><td>good / car</td></tr>
+        </tbody>
+    </table>
+
+    <!-- FAQ -->
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+            Is Qubeessaa AI free to use?
+            <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+            Yes, Qubeessaa AI is completely free to use. There is no registration, no subscription, and no hidden fees. Simply visit the website and start checking your text.
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+            How accurate is the spell checker?
+            <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+            The spell checker uses a vocabulary of over 59,000 Afaan Oromo words and a context-aware AI model. Accuracy is high for common words and standard spelling. For rare or regional words, the confidence score will be lower. Always review low-confidence corrections carefully.
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+            Why is a correct word being flagged as wrong?
+            <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+            This can happen with very rare words, proper nouns (names of people or places), or regional dialect words that are not yet in our vocabulary. Click the ✗ (reject) button to tell the AI the word is correct. This helps improve the system over time.
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+            Does it check grammar too?
+            <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+            Yes, Qubeessaa AI includes basic grammar checking. Grammar suggestions appear in an orange box below the spelling corrections. Note that grammar checking is less comprehensive than spell checking — it covers common patterns but not all grammar rules.
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+            Is my text stored or shared?
+            <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+            Text you submit is processed to generate corrections and is not permanently stored or shared with third parties. Anonymous feedback data (accepted/rejected corrections) may be used to improve the model. See our <a href="/privacy" style="color:#667eea;">Privacy Policy</a> for full details.
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+            Can I use it on my phone?
+            <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer">
+            Yes. Qubeessaa AI is fully responsive and works on smartphones, tablets, and desktop computers. Open it in any modern web browser — no app download needed.
+        </div>
+    </div>
+
+    <div class="cta-box">
+        <h3>Ready to check your text?</h3>
+        <p>Go to the home page and start using the spell checker now — it's free and takes just seconds.</p>
+        <a href="/" class="cta-btn">🔍 Start Checking Now</a>
+    </div>
+
+    <footer>
+        <div style="margin-bottom: 18px;">
+            <div style="font-size: 1.3em; font-weight: 700; color: #667eea; margin-bottom: 6px;">🔤 Qubeessaa AI</div>
+            <p style="color: #aaa; font-size: 0.88em; max-width: 380px; margin: 0 auto; line-height: 1.5;">
+                Free AI-powered spell checker for the Afaan Oromo language. Supporting 40M+ speakers worldwide.
+            </p>
+        </div>
+        <nav aria-label="Footer navigation" style="margin-bottom: 18px;">
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/help">Help</a>
+            <a href="/privacy">Privacy Policy</a>
+            <a href="https://github.com/hawitariku/qubeessaa-ai" target="_blank">GitHub</a>
+        </nav>
+        <div style="border-top: 1px solid #f0f0f0; padding-top: 15px; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; font-size: 0.82em; color: #bbb;">
+            <span>Designed &amp; developed by</span>
+            <strong style="color: #667eea;">Hawi Tariku</strong>
+            <span>·</span>
+            <span>Addis Ababa, Ethiopia</span>
+            <span>·</span>
+            <span>© 2026 Hawi Tariku. All rights reserved.</span>
+        </div>
+    </footer>
+
+</div>
+
+<script>
+    function toggleFaq(el) {
+        const answer = el.nextElementSibling;
+        const icon = el.querySelector('.faq-icon');
+        answer.classList.toggle('open');
+        icon.classList.toggle('open');
+    }
+</script>
+</body>
+</html>

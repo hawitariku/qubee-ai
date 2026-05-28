@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Qubeessaa AI | Afaan Oromo Spell Checker</title>
+    <meta name="description" content="Learn about Qubeessaa AI, the free AI-powered Afaan Oromo spell checker. Built to preserve and support the Oromo language through technology.">
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4332009994078822"
+     crossorigin="anonymous"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: sticky; top: 0; z-index: 5000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .navbar-inner {
+            max-width: 900px; margin: 0 auto;
+            display: flex; align-items: center;
+            justify-content: space-between;
+            padding: 0 20px; flex-wrap: wrap;
+        }
+        .navbar-brand {
+            color: white; font-weight: 700; font-size: 1.1em;
+            text-decoration: none; padding: 14px 0;
+        }
+        .navbar-links { display: flex; gap: 5px; flex-wrap: wrap; }
+        .navbar-links a {
+            color: rgba(255,255,255,0.85); text-decoration: none;
+            padding: 14px 14px; font-size: 0.95em;
+            transition: color 0.2s, background 0.2s; border-radius: 4px;
+        }
+        .navbar-links a:hover, .navbar-links a.active {
+            color: white; background: rgba(255,255,255,0.15);
+        }
+
+        .container {
+            max-width: 860px; margin: 30px auto 40px;
+            background: white; border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 50px 50px;
+        }
+
+        .page-header {
+            text-align: center; margin-bottom: 40px;
+            padding-bottom: 30px; border-bottom: 2px solid #f0f0f0;
+        }
+        .page-header h1 { font-size: 2.2em; color: #667eea; margin-bottom: 10px; }
+        .page-header p { color: #666; font-size: 1.1em; line-height: 1.6; }
+
+        h2 { color: #667eea; font-size: 1.4em; margin: 35px 0 12px; }
+        p { color: #555; line-height: 1.8; margin-bottom: 15px; font-size: 1em; }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f4ff 0%, #f8f0ff 100%);
+            border-left: 4px solid #667eea;
+            padding: 20px 25px; border-radius: 8px;
+            margin: 25px 0;
+        }
+        .highlight-box p { margin: 0; color: #444; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 20px; margin: 25px 0;
+        }
+        .stat-card {
+            text-align: center; padding: 25px 15px;
+            background: #f8f9fa; border-radius: 12px;
+            border: 1px solid #e8e8e8;
+        }
+        .stat-number { font-size: 2em; font-weight: 700; color: #667eea; }
+        .stat-label { color: #666; font-size: 0.9em; margin-top: 5px; }
+
+        .feature-list { list-style: none; padding: 0; margin: 15px 0; }
+        .feature-list li {
+            padding: 10px 0 10px 30px; position: relative;
+            color: #555; border-bottom: 1px solid #f5f5f5; line-height: 1.6;
+        }
+        .feature-list li::before {
+            content: '✓'; position: absolute; left: 0;
+            color: #4CAF50; font-weight: 700; font-size: 1.1em;
+        }
+
+        .lang-section {
+            background: #fff8e1; border-left: 4px solid #FFC107;
+            padding: 20px 25px; border-radius: 8px; margin: 25px 0;
+        }
+        .lang-section h3 { color: #e65100; margin-bottom: 10px; }
+
+        .example-table {
+            width: 100%; border-collapse: collapse; margin: 20px 0;
+        }
+        .example-table th {
+            background: #667eea; color: white;
+            padding: 12px 15px; text-align: left; font-size: 0.95em;
+        }
+        .example-table td {
+            padding: 10px 15px; border-bottom: 1px solid #eee;
+            font-size: 0.95em; color: #555;
+        }
+        .example-table tr:nth-child(even) td { background: #f9f9f9; }
+
+        .developer-card {
+            display: flex; align-items: center; gap: 25px;
+            background: #f8f9fa; border-radius: 12px;
+            padding: 25px; margin: 25px 0;
+        }
+        .developer-avatar {
+            width: 80px; height: 80px; border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5em; flex-shrink: 0;
+        }
+        .developer-info h3 { color: #333; margin-bottom: 5px; }
+        .developer-info p { color: #666; margin: 0; font-size: 0.95em; }
+        .developer-info a { color: #667eea; text-decoration: none; }
+        .developer-info a:hover { text-decoration: underline; }
+
+        footer {
+            margin-top: 50px; padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+            text-align: center; color: #999;
+        }
+        footer nav { margin-bottom: 15px; }
+        footer nav a {
+            color: #667eea; text-decoration: none;
+            margin: 0 10px; font-size: 0.9em;
+        }
+        footer p { font-size: 0.85em; }
+
+        @media (max-width: 600px) {
+            .container { padding: 25px 20px; margin: 15px; }
+            .page-header h1 { font-size: 1.7em; }
+            .developer-card { flex-direction: column; text-align: center; }
+            .navbar-links a { padding: 10px 8px; font-size: 0.85em; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="navbar-inner">
+        <a href="/" class="navbar-brand">🔤 Qubeessaa AI</a>
+        <div class="navbar-links">
+            <a href="/">Home</a>
+            <a href="/about" class="active">About</a>
+            <a href="/help">Help</a>
+            <a href="/privacy">Privacy</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+
+    <div class="page-header">
+        <h1>🔤 About Qubeessaa AI</h1>
+        <p>A free, AI-powered spell checker built to support and preserve the Afaan Oromo language through modern technology.</p>
+    </div>
+
+    <h2>What is Qubeessaa AI?</h2>
+    <p>
+        Qubeessaa AI is a free online spell checker and grammar assistant designed specifically for the <strong>Afaan Oromo language</strong> (also known as Oromiffa or Oromo). It uses artificial intelligence and a large vocabulary database to detect spelling errors and suggest accurate corrections in real time.
+    </p>
+    <p>
+        The name <em>Qubeessaa</em> comes from the Afaan Oromo word for "writer" or "one who writes," reflecting our mission to help Oromo speakers write correctly and confidently.
+    </p>
+
+    <div class="highlight-box">
+        <p>
+            <strong>Afaan Oromo</strong> is the most widely spoken Cushitic language in the world, with over 40 million speakers primarily in Ethiopia and Kenya. Despite its large speaker base, digital tools for the language have historically been very limited. Qubeessaa AI aims to change that.
+        </p>
+    </div>
+
+    <h2>Key Statistics</h2>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">59,000+</div>
+            <div class="stat-label">Words in vocabulary</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">40M+</div>
+            <div class="stat-label">Afaan Oromo speakers</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">Free to use</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">AI</div>
+            <div class="stat-label">Powered corrections</div>
+        </div>
+    </div>
+
+    <h2>Features</h2>
+    <ul class="feature-list">
+        <li>Spell checking powered by a 59,000+ word Afaan Oromo vocabulary</li>
+        <li>Context-aware corrections using bigram and trigram language models</li>
+        <li>Confidence scores for every correction (High / Medium / Low)</li>
+        <li>Multiple alternative word suggestions for each error</li>
+        <li>Basic grammar checking and suggestions</li>
+        <li>Dark mode for comfortable reading in low-light environments</li>
+        <li>Export corrected text as a downloadable file</li>
+        <li>User feedback system to continuously improve accuracy</li>
+        <li>Fully responsive — works on phones, tablets, and computers</li>
+    </ul>
+
+    <h2>About the Afaan Oromo Language</h2>
+    <p>
+        Afaan Oromo is written using the <strong>Qubee</strong> alphabet, a Latin-based writing system officially adopted in 1991. Before Qubee, Afaan Oromo was written using the Ethiopic (Ge'ez) script. The transition to Qubee made literacy more accessible and helped standardize spelling across regions.
+    </p>
+
+    <div class="lang-section">
+        <h3>🔤 About the Qubee Alphabet</h3>
+        <p>Qubee uses 26 Latin letters plus some digraphs (two-letter combinations) to represent sounds unique to Afaan Oromo. Some important features:</p>
+        <ul style="margin-top: 10px; padding-left: 20px; color: #555; line-height: 2;">
+            <li><strong>Long vowels</strong> are written by doubling the vowel letter: <em>a → aa</em>, <em>e → ee</em>, <em>i → ii</em>, <em>o → oo</em>, <em>u → uu</em></li>
+            <li><strong>Glottal stop (hudhaa)</strong> is written with an apostrophe: <em>a'</em></li>
+            <li><strong>Digraphs</strong> include: <em>ch, dh, ny, ph, sh, ts</em></li>
+        </ul>
+    </div>
+
+    <h2>Example Corrections</h2>
+    <p>Here are some examples of the types of corrections Qubeessaa AI can make:</p>
+    <table class="example-table">
+        <thead>
+            <tr>
+                <th>Incorrect (Dogoggora)</th>
+                <th>Correct (Sirrii)</th>
+                <th>Note</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>barbaada</td>
+                <td>barbaada</td>
+                <td>Correct — "wants/needs"</td>
+            </tr>
+            <tr>
+                <td>dhuguu</td>
+                <td>dhuguu</td>
+                <td>Correct — "to drink"</td>
+            </tr>
+            <tr>
+                <td>mana</td>
+                <td>mana</td>
+                <td>Correct — "house/home"</td>
+            </tr>
+            <tr>
+                <td>bisaan</td>
+                <td>bishaan</td>
+                <td>Missing 'h' — "water"</td>
+            </tr>
+            <tr>
+                <td>deeme</td>
+                <td>deeme</td>
+                <td>Correct — "went/traveled"</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Our Corpus (Data Sources)</h2>
+    <p>
+        The spell checker's vocabulary is built from multiple high-quality Afaan Oromo text sources:
+    </p>
+    <ul class="feature-list">
+        <li><strong>Afaan Oromo Bible</strong> — a complete, professionally translated text providing a large and reliable vocabulary base</li>
+        <li><strong>Wikipedia articles</strong> in Afaan Oromo — covering a wide range of topics and modern vocabulary</li>
+        <li><strong>Professional and academic vocabulary</strong> — terms used in education, government, and media</li>
+        <li><strong>User feedback</strong> — corrections accepted or rejected by real users help improve accuracy over time</li>
+    </ul>
+
+    <h2>About the Developer</h2>
+    <div class="developer-card">
+        <div class="developer-avatar">👩‍💻</div>
+        <div class="developer-info">
+            <h3>Hawi Tariku</h3>
+            <p>Software developer and Afaan Oromo language enthusiast based in Addis Ababa, Ethiopia. Built Qubeessaa AI to help Oromo speakers write correctly and to support the digital presence of the Afaan Oromo language.</p>
+            <p style="margin-top: 8px;">
+                <a href="https://github.com/hawitariku/qubeessaa-ai" target="_blank">🔗 View source code on GitHub</a>
+            </p>
+        </div>
+    </div>
+
+    <h2>Contact & Feedback</h2>
+    <p>
+        We welcome feedback, bug reports, and suggestions. If you find a word that is incorrectly flagged or a correction that seems wrong, please use the ✓ / ✗ feedback buttons on the main page. Your input directly improves the tool for everyone.
+    </p>
+    <p>
+        For other inquiries, you can reach us through the
+        <a href="https://github.com/hawitariku/qubeessaa-ai" target="_blank" style="color: #667eea;">GitHub repository</a>.
+    </p>
+
+    <footer>
+        <div style="margin-bottom: 18px;">
+            <div style="font-size: 1.3em; font-weight: 700; color: #667eea; margin-bottom: 6px;">🔤 Qubeessaa AI</div>
+            <p style="color: #aaa; font-size: 0.88em; max-width: 380px; margin: 0 auto; line-height: 1.5;">
+                Free AI-powered spell checker for the Afaan Oromo language. Supporting 40M+ speakers worldwide.
+            </p>
+        </div>
+        <nav aria-label="Footer navigation" style="margin-bottom: 18px;">
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/help">Help</a>
+            <a href="/privacy">Privacy Policy</a>
+            <a href="https://github.com/hawitariku/qubeessaa-ai" target="_blank">GitHub</a>
+        </nav>
+        <div style="border-top: 1px solid #f0f0f0; padding-top: 15px; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; font-size: 0.82em; color: #bbb;">
+            <span>Designed &amp; developed by</span>
+            <strong style="color: #667eea;">Hawi Tariku</strong>
+            <span>·</span>
+            <span>Addis Ababa, Ethiopia</span>
+            <span>·</span>
+            <span>© 2026 Hawi Tariku. All rights reserved.</span>
+        </div>
+    </footer>
+
+</div>
+</body>
+</html>

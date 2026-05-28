@@ -881,9 +881,76 @@
                 display: none;
             }
         }
+
+        /* Navigation Bar */
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 5000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .navbar-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            flex-wrap: wrap;
+        }
+
+        .navbar-brand {
+            color: white;
+            font-weight: 700;
+            font-size: 1.1em;
+            text-decoration: none;
+            padding: 14px 0;
+            letter-spacing: 0.5px;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .navbar-links a {
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            padding: 14px 14px;
+            font-size: 0.95em;
+            transition: color 0.2s, background 0.2s;
+            border-radius: 4px;
+        }
+
+        .navbar-links a:hover,
+        .navbar-links a.active {
+            color: white;
+            background: rgba(255,255,255,0.15);
+        }
+
+        @media (max-width: 600px) {
+            .navbar-brand { font-size: 0.95em; }
+            .navbar-links a { padding: 10px 8px; font-size: 0.85em; }
+        }
     </style>
 </head>
 <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <div class="navbar-inner">
+            <a href="/" class="navbar-brand">🔤 Qubeessaa AI</a>
+            <div class="navbar-links">
+                <a href="/" class="active">Home</a>
+                <a href="/about">About</a>
+                <a href="/help">Help</a>
+                <a href="/privacy">Privacy</a>
+            </div>
+        </div>
+    </nav>
     <!-- Welcome Popup -->
     <div class="welcome-overlay" id="welcomeOverlay" style="display: none;">
         <div class="welcome-popup">
@@ -1048,6 +1115,22 @@
         
         <h1><span class="emoji">🔤</span>Afaan Oromo Spell Checker</h1>
         <p class="subtitle">AI-powered spelling correction for Afaan Oromo language</p>
+        <p style="text-align: center; color: #777; font-size: 0.95em; margin-bottom: 25px; line-height: 1.6;">
+            Free online tool with 59,000+ words vocabulary • Context-aware corrections • Grammar suggestions • Export results
+        </p>
+
+        <!-- Introduction Section -->
+        <div style="background: #f8f9fa; padding: 25px; border-radius: 12px; margin-bottom: 25px; border-left: 4px solid #667eea;">
+            <h3 style="color: #667eea; margin-bottom: 12px; font-size: 1.2em;">Welcome to Qubeessaa AI</h3>
+            <p style="color: #555; line-height: 1.7; margin-bottom: 12px; font-size: 0.95em;">
+                <strong>Qubeessaa AI</strong> is a free, AI-powered spell checker designed specifically for the <strong>Afaan Oromo language</strong>. 
+                Whether you're writing documents, emails, or social media posts in Afaan Oromo, our tool helps you write correctly and confidently.
+            </p>
+            <p style="color: #555; line-height: 1.7; margin: 0; font-size: 0.95em;">
+                Simply type or paste your Afaan Oromo text below, click "Check Spelling," and get instant corrections with confidence scores. 
+                Our AI understands context and provides multiple alternatives for each correction.
+            </p>
+        </div>
         
         <!-- Ad Placement 1: Top Banner (728x90 or responsive) -->
         <div style="text-align: center; margin: 20px 0; padding: 10px; background: #f5f5f5; border-radius: 8px;">
@@ -1068,8 +1151,9 @@
             <textarea 
                 name="text" 
                 placeholder="Type or paste Afaan Oromo text here...
-                
-Example: 'Ani bishaan dhuguu barbaada' or 'Inni gara mana deeme'"
+
+Example: 'Ani bishaan dhuguu barbaada' (I want to drink water)
+Or: 'Inni gara mana deeme' (He went to the house)"
             >{% if original %}{{ original }}{% endif %}</textarea>
             
             <div class="button-container">
@@ -1161,6 +1245,128 @@ Example: 'Ani bishaan dhuguu barbaada' or 'Inni gara mana deeme'"
             <small style="color: #999;">Advertisement</small>
         </div>
         
+        <!-- Educational Content About Afaan Oromo -->
+        <div class="language-info" style="margin-top: 40px; padding: 30px; background: linear-gradient(135deg, #f0f4ff 0%, #f8f0ff 100%); border-radius: 15px;">
+            <h3 style="text-align: center; color: #667eea; margin-bottom: 20px; font-size: 1.5em;">📚 About the Afaan Oromo Language</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-bottom: 25px;">
+                <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <h4 style="color: #667eea; margin-bottom: 10px;">🌍 Language Overview</h4>
+                    <p style="color: #555; line-height: 1.6; margin: 0; font-size: 0.95em;">
+                        Afaan Oromo (also called Oromiffa) is the most widely spoken Cushitic language in the world, with over 40 million native speakers. It is primarily spoken in Ethiopia and Kenya, making it one of Africa's major languages.
+                    </p>
+                </div>
+                
+                <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <h4 style="color: #667eea; margin-bottom: 10px;">🔤 Writing System</h4>
+                    <p style="color: #555; line-height: 1.6; margin: 0; font-size: 0.95em;">
+                        Afaan Oromo uses the Qubee alphabet, a Latin-based writing system officially adopted in 1991. This system uses 26 letters plus special combinations to represent the unique sounds of the language.
+                    </p>
+                </div>
+            </div>
+
+            <div style="background: white; padding: 25px; border-radius: 12px; margin-bottom: 20px;">
+                <h4 style="color: #667eea; margin-bottom: 15px; text-align: center;">✍️ Common Spelling Patterns in Afaan Oromo</h4>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div>
+                        <h5 style="color: #444; margin-bottom: 8px; font-size: 1em;">Long Vowels (Sagalee Dheeraa)</h5>
+                        <p style="color: #666; font-size: 0.9em; line-height: 1.5; margin-bottom: 8px;">
+                            Long vowels are written by doubling the letter:
+                        </p>
+                        <ul style="color: #555; font-size: 0.9em; margin: 0; padding-left: 20px;">
+                            <li><strong>aa</strong> - as in "maana" (house)</li>
+                            <li><strong>ee</strong> - as in "deeme" (went)</li>
+                            <li><strong>ii</strong> - as in "bii" (debt)</li>
+                            <li><strong>oo</strong> - as in "boo'aa" (cry)</li>
+                            <li><strong>uu</strong> - as in "dhuguu" (to drink)</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h5 style="color: #444; margin-bottom: 8px; font-size: 1em;">Special Sounds</h5>
+                        <p style="color: #666; font-size: 0.9em; line-height: 1.5; margin-bottom: 8px;">
+                            Unique letter combinations (digraphs):
+                        </p>
+                        <ul style="color: #555; font-size: 0.9em; margin: 0; padding-left: 20px;">
+                            <li><strong>dh</strong> - retroflex sound in "dhuguu"</li>
+                            <li><strong>ch</strong> - as in "chakkaa"</li>
+                            <li><strong>ny</strong> - as in "nyaata" (food)</li>
+                            <li><strong>ph</strong> - as in "phaaroo"</li>
+                            <li><strong>'</strong> - glottal stop (hudhaa)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <p style="color: #666; font-size: 0.95em; margin-bottom: 15px;">
+                    Want to learn more about writing correctly in Afaan Oromo? Check out our comprehensive guide.
+                </p>
+                <a href="/help" style="display: inline-block; padding: 12px 25px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 25px; font-size: 0.95em; font-weight: 600; box-shadow: 0 4px 15px rgba(102,126,234,0.4); transition: transform 0.2s;">
+                    📖 Read Full Writing Guide
+                </a>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div style="margin-top: 40px; padding: 30px; background: white; border-radius: 15px; border: 1px solid #e8e8e8;">
+            <h3 style="text-align: center; color: #667eea; margin-bottom: 25px; font-size: 1.4em;">❓ Frequently Asked Questions</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <div style="padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                    <h4 style="color: #444; margin-bottom: 8px; font-size: 1em;">Is this tool free to use?</h4>
+                    <p style="color: #666; font-size: 0.9em; line-height: 1.6; margin: 0;">
+                        Yes, Qubeessaa AI is completely free. No registration, no subscription, no hidden fees. Just visit and start checking your Afaan Oromo text immediately.
+                    </p>
+                </div>
+                
+                <div style="padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                    <h4 style="color: #444; margin-bottom: 8px; font-size: 1em;">How accurate is the spell checker?</h4>
+                    <p style="color: #666; font-size: 0.9em; line-height: 1.6; margin: 0;">
+                        Our AI uses a 59,000+ word vocabulary and context-aware algorithms. Accuracy is high for common words. Each correction includes a confidence score to help you decide.
+                    </p>
+                </div>
+                
+                <div style="padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                    <h4 style="color: #444; margin-bottom: 8px; font-size: 1em;">Does it work on mobile phones?</h4>
+                    <p style="color: #666; font-size: 0.9em; line-height: 1.6; margin: 0;">
+                        Yes! The spell checker is fully responsive and works perfectly on smartphones, tablets, and desktop computers. No app download needed.
+                    </p>
+                </div>
+                
+                <div style="padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                    <h4 style="color: #444; margin-bottom: 8px; font-size: 1em;">Is my text stored or shared?</h4>
+                    <p style="color: #666; font-size: 0.9em; line-height: 1.6; margin: 0;">
+                        No. Your text is processed temporarily to generate corrections and then discarded. We don't store or share your content. See our <a href="/privacy" style="color: #667eea;">Privacy Policy</a>.
+                    </p>
+                </div>
+                
+                <div style="padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                    <h4 style="color: #444; margin-bottom: 8px; font-size: 1em;">What if a correct word is flagged?</h4>
+                    <p style="color: #666; font-size: 0.9em; line-height: 1.6; margin: 0;">
+                        This can happen with rare words or names. Click the ✗ (reject) button to tell the AI the word is correct. Your feedback helps improve the system.
+                    </p>
+                </div>
+                
+                <div style="padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                    <h4 style="color: #444; margin-bottom: 8px; font-size: 1em;">Does it check grammar too?</h4>
+                    <p style="color: #666; font-size: 0.9em; line-height: 1.6; margin: 0;">
+                        Yes! Basic grammar checking is included. Grammar suggestions appear in an orange box below spelling corrections, helping you write more naturally.
+                    </p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 25px;">
+                <p style="color: #666; font-size: 0.95em; margin-bottom: 15px;">
+                    Have more questions? Check our detailed help guide for complete instructions and tips.
+                </p>
+                <a href="/help" style="display: inline-block; padding: 10px 20px; background: #667eea; color: white; text-decoration: none; border-radius: 20px; font-size: 0.9em; font-weight: 600;">
+                    📚 View Help Guide
+                </a>
+            </div>
+        </div>
+
         <div class="features">
             <h3>✨ Features</h3>
             <div class="feature-grid">
@@ -1191,19 +1397,37 @@ Example: 'Ani bishaan dhuguu barbaada' or 'Inni gara mana deeme'"
             </div>
         </div>
         
-        <!-- Footer with Developer Credit -->
-        <footer style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #e0e0e0; text-align: center; color: #666;">
-            <p style="margin-bottom: 10px; font-size: 0.95em;">
-                <strong>Developed by Hawi Tariku</strong>
-            </p>
-            <p style="font-size: 0.85em; color: #999;">
-                © 2026 Hawi Tariku. All rights reserved.
-            </p>
-            <p style="font-size: 0.85em; margin-top: 10px;">
-                <a href="https://github.com/hawitariku/qubeessaa-ai" target="_blank" style="color: #667eea; text-decoration: none;">
-                    View on GitHub
-                </a>
-            </p>
+        <!-- Professional Footer -->
+        <footer style="margin-top: 50px; padding: 35px 0 20px; border-top: 2px solid #e8e8e8; text-align: center;">
+            <!-- Brand -->
+            <div style="margin-bottom: 20px;">
+                <div style="font-size: 1.5em; font-weight: 700; color: #667eea; margin-bottom: 6px;">🔤 Qubeessaa AI</div>
+                <p style="color: #888; font-size: 0.9em; max-width: 400px; margin: 0 auto; line-height: 1.5;">
+                    Free AI-powered spell checker for the Afaan Oromo language. Supporting 40M+ speakers worldwide.
+                </p>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav aria-label="Footer navigation" style="margin-bottom: 20px;">
+                <a href="/" style="color: #667eea; text-decoration: none; margin: 0 12px; font-size: 0.9em; font-weight: 500;">Home</a>
+                <a href="/about" style="color: #667eea; text-decoration: none; margin: 0 12px; font-size: 0.9em; font-weight: 500;">About</a>
+                <a href="/help" style="color: #667eea; text-decoration: none; margin: 0 12px; font-size: 0.9em; font-weight: 500;">Help</a>
+                <a href="/privacy" style="color: #667eea; text-decoration: none; margin: 0 12px; font-size: 0.9em; font-weight: 500;">Privacy Policy</a>
+                <a href="https://github.com/hawitariku/qubeessaa-ai" target="_blank" style="color: #667eea; text-decoration: none; margin: 0 12px; font-size: 0.9em; font-weight: 500;">GitHub</a>
+            </nav>
+
+            <!-- Divider -->
+            <div style="border-top: 1px solid #f0f0f0; margin: 0 0 20px;"></div>
+
+            <!-- Developer credit + copyright -->
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; font-size: 0.85em; color: #aaa;">
+                <span>Designed &amp; developed by</span>
+                <strong style="color: #667eea;">Hawi Tariku</strong>
+                <span>·</span>
+                <span>Addis Ababa, Ethiopia</span>
+                <span>·</span>
+                <span>© 2026 Hawi Tariku. All rights reserved.</span>
+            </div>
         </footer>
     </div>
     

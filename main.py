@@ -234,6 +234,21 @@ async def record_feedback(request: Request):
     checker.record_user_feedback(original_word, corrected_word, accepted)
     return JSONResponse({'status': 'success', 'message': 'Feedback recorded'})
 
+@app.get("/about", response_class=HTMLResponse)
+async def about_page(request: Request):
+    """About page"""
+    return templates(request, "about.html", {})
+
+@app.get("/help", response_class=HTMLResponse)
+async def help_page(request: Request):
+    """Help page"""
+    return templates(request, "help.html", {})
+
+@app.get("/privacy", response_class=HTMLResponse)
+async def privacy_page(request: Request):
+    """Privacy Policy page"""
+    return templates(request, "privacy.html", {})
+
 @app.get("/health")
 async def health_check():
     """Health check endpoint for monitoring"""
