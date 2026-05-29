@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request, Form, UploadFile, File, HTTPException
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from spell_checker_ml import MLEnhancedSpellChecker
 import logging
@@ -8,8 +9,13 @@ from datetime import datetime
 from jinja2 import FileSystemLoader, ChoiceLoader, BaseLoader
 import time
 from functools import wraps
+import os
 
 app = FastAPI(title="Afaan Oromo Spell Checker", version="2.0.0")
+
+# Mount static files if directory exists
+if os.path.exists("static"):
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Add CORS middleware
 app.add_middleware(
@@ -78,6 +84,15 @@ def templates(request: Request, name: str, context: dict):
 print("🔄 Initializing ML-Enhanced Spell Checker...")
 checker = MLEnhancedSpellChecker(corpus_path='oromo_corpus.txt', use_ml=True)
 print("✅ ML-Enhanced spell checker ready!")
+
+@app.get("/ads.txt", response_class=PlainTextResponse)
+async def ads_txt():
+    """Serve ads.txt file for AdSense"""
+    try:
+        with open("static/ads.txt", "r") as f:
+            return f.read()
+    except FileNotFoundError:
+        return "google.com, pub-4332009994078822, DIRECT, f08c47fec0942fa0"
 
 @app.get("/", response_class=HTMLResponse)
 @rate_limit
