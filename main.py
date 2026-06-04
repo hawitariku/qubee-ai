@@ -87,12 +87,8 @@ print("✅ ML-Enhanced spell checker ready!")
 
 @app.get("/ads.txt", response_class=PlainTextResponse)
 async def ads_txt():
-    """Serve ads.txt file for AdSense"""
-    try:
-        with open("static/ads.txt", "r") as f:
-            return f.read()
-    except FileNotFoundError:
-        return "google.com, pub-4332009994078822, DIRECT, f08c47fec0942fa0"
+    """Serve ads.txt file for AdSense - hardcoded for reliability"""
+    return "google.com, pub-4332009994078822, DIRECT, f08c47fec0942fa0"
 
 @app.get("/", response_class=HTMLResponse)
 @rate_limit
