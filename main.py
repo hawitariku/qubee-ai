@@ -90,6 +90,47 @@ async def ads_txt():
     """Serve ads.txt file for AdSense - hardcoded for reliability"""
     return "google.com, pub-4332009994407882, DIRECT, f08c47fec0942fa0"
 
+@app.get("/robots.txt", response_class=PlainTextResponse)
+async def robots_txt():
+    """Robots.txt - allow all crawlers and point to sitemap"""
+    return """User-agent: *
+Allow: /
+
+Sitemap: https://qubeessaa-ai.up.railway.app/sitemap.xml"""
+
+@app.get("/sitemap.xml")
+async def sitemap_xml():
+    """XML sitemap for Google Search Console indexing"""
+    from fastapi.responses import Response
+    base = "https://qubeessaa-ai.up.railway.app"
+    urls = [
+        ("", "1.0", "weekly"),
+        ("/about", "0.8", "monthly"),
+        ("/blog", "0.9", "weekly"),
+        ("/help", "0.7", "monthly"),
+        ("/privacy", "0.5", "monthly"),
+        ("/blog/qubee-alphabet-guide", "0.8", "monthly"),
+        ("/blog/common-spelling-mistakes", "0.8", "monthly"),
+        ("/blog/grammar-basics", "0.8", "monthly"),
+        ("/blog/history-of-afaan-oromo", "0.8", "monthly"),
+        ("/blog/improve-writing-skills", "0.8", "monthly"),
+        ("/blog/afaan-oromo-dialects", "0.8", "monthly"),
+        ("/blog/afaan-oromo-proverbs", "0.8", "monthly"),
+        ("/blog/punctuation-rules", "0.8", "monthly"),
+        ("/blog/gadaa-system-language", "0.8", "monthly"),
+        ("/blog/afaan-oromo-numbers", "0.8", "monthly"),
+    ]
+    xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    for path, priority, changefreq in urls:
+        xml += f"""  <url>
+    <loc>{base}{path}</loc>
+    <priority>{priority}</priority>
+    <changefreq>{changefreq}</changefreq>
+  </url>\n"""
+    xml += '</urlset>'
+    return Response(content=xml, media_type="application/xml")
+
 @app.get("/", response_class=HTMLResponse)
 @rate_limit
 async def get_form(request: Request):
@@ -259,6 +300,61 @@ async def help_page(request: Request):
 async def privacy_page(request: Request):
     """Privacy Policy page"""
     return templates(request, "privacy.html", {})
+
+@app.get("/blog", response_class=HTMLResponse)
+async def blog_index(request: Request):
+    """Blog index page"""
+    return templates(request, "blog.html", {})
+
+@app.get("/blog/qubee-alphabet-guide", response_class=HTMLResponse)
+async def blog_qubee_alphabet(request: Request):
+    """Blog: Complete Guide to the Qubee Alphabet"""
+    return templates(request, "blog_qubee_alphabet.html", {})
+
+@app.get("/blog/common-spelling-mistakes", response_class=HTMLResponse)
+async def blog_spelling_mistakes(request: Request):
+    """Blog: 10 Common Afaan Oromo Spelling Mistakes"""
+    return templates(request, "blog_spelling_mistakes.html", {})
+
+@app.get("/blog/grammar-basics", response_class=HTMLResponse)
+async def blog_grammar_basics(request: Request):
+    """Blog: Afaan Oromo Grammar Basics"""
+    return templates(request, "blog_grammar_basics.html", {})
+
+@app.get("/blog/history-of-afaan-oromo", response_class=HTMLResponse)
+async def blog_history(request: Request):
+    """Blog: History of the Afaan Oromo Language"""
+    return templates(request, "blog_history.html", {})
+
+@app.get("/blog/improve-writing-skills", response_class=HTMLResponse)
+async def blog_improve_writing(request: Request):
+    """Blog: How to Improve Your Afaan Oromo Writing Skills"""
+    return templates(request, "blog_improve_writing.html", {})
+
+@app.get("/blog/afaan-oromo-dialects", response_class=HTMLResponse)
+async def blog_oromo_dialects(request: Request):
+    """Blog: Afaan Oromo Dialects"""
+    return templates(request, "blog_oromo_dialects.html", {})
+
+@app.get("/blog/afaan-oromo-proverbs", response_class=HTMLResponse)
+async def blog_oromo_proverbs(request: Request):
+    """Blog: Famous Afaan Oromo Proverbs"""
+    return templates(request, "blog_oromo_proverbs.html", {})
+
+@app.get("/blog/punctuation-rules", response_class=HTMLResponse)
+async def blog_punctuation(request: Request):
+    """Blog: Punctuation Rules in Written Afaan Oromo"""
+    return templates(request, "blog_punctuation.html", {})
+
+@app.get("/blog/gadaa-system-language", response_class=HTMLResponse)
+async def blog_gadaa(request: Request):
+    """Blog: The Gadaa System and Afaan Oromo"""
+    return templates(request, "blog_gadaa_system.html", {})
+
+@app.get("/blog/afaan-oromo-numbers", response_class=HTMLResponse)
+async def blog_numbers(request: Request):
+    """Blog: Numbers in Afaan Oromo"""
+    return templates(request, "blog_afaan_oromo_numbers.html", {})
 
 @app.get("/health")
 async def health_check():
