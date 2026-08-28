@@ -1,8 +1,11 @@
-import PyPDF2
+try:
+    from pypdf import PdfReader
+except ImportError:
+    from PyPDF2 import PdfReader  # legacy fallback
 import re
 
 # Extract PDF text
-pdf = PyPDF2.PdfReader(open('gaz_book.pdf', 'rb'))
+pdf = PdfReader(open('gaz_book.pdf', 'rb'))
 text = ''.join([p.extract_text() or '' for p in pdf.pages]).lower()
 
 # Get unique words

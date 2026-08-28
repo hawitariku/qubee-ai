@@ -18,7 +18,10 @@ User workflow:
 import requests
 import re
 from pathlib import Path
-import PyPDF2
+try:
+    from pypdf import PdfReader
+except ImportError:
+    from PyPDF2 import PdfReader  # legacy fallback
 from io import BytesIO
 
 # URL for the complete Afaan Oromo Bible PDF
@@ -54,7 +57,7 @@ def extract_text_from_pdf(pdf_path):
     
     try:
         with open(pdf_path, 'rb') as f:
-            pdf_reader = PyPDF2.PdfReader(f)
+            pdf_reader = PdfReader(f)
             total_pages = len(pdf_reader.pages)
             print(f"   Total pages: {total_pages}")
             print()
@@ -105,13 +108,16 @@ def main():
     
     # Check for required library
     try:
-        import PyPDF2
+        from pypdf import PdfReader
     except ImportError:
-        print("❌ PyPDF2 not installed!")
-        print("Installing...")
-        import subprocess
-        subprocess.check_call(['pip', 'install', 'PyPDF2'])
-        import PyPDF2
+        try:
+            from PyPDF2 import PdfReader
+        except ImportError:
+            print("❌ pypdf not installed!")
+            print("Installing...")
+            import subprocess
+            subprocess.check_call(['pip', 'install', 'pypdf'])
+            from pypdf import PdfReader
     
     print("\n📥 Downloading and extracting texts...\n")
     
@@ -179,7 +185,7 @@ def main():
     print("=" * 60)
     print("\nNext steps:")
     print("1. Restart your web server:")
-    print("   C:\\Python312\\python.exe main.py")
+    print("   uvicorn main:app --host 0.0.0.0 --port 8080")
     print("2. Test with Bible verses!")
     print("\nExample test sentences:")
     print("  'Waaqayyo jalqaba uume samii fi lafa'")

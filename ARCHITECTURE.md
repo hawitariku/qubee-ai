@@ -1,6 +1,6 @@
-# Qubee AI Architecture
+# Qubeessaa AI Architecture
 
-Technical architecture and design documentation for Qubee AI.
+Technical architecture and design documentation for Qubeessaa AI.
 
 ## System Overview
 
@@ -47,16 +47,47 @@ Technical architecture and design documentation for Qubee AI.
 - Logging
 
 **Key Endpoints**:
-- `GET /` - Web interface
-- `POST /check` - Spell checking
-- `POST /suggestions` - Word suggestions
-- `POST /check_grammar` - Grammar checking
-- `GET /stats` - System statistics
+
+*Web UI (HTML responses)*
+- `GET /` — Web interface
+- `POST /check` — Spell checking (form → rendered HTML)
+- `POST /upload` — File upload (form → rendered HTML)
+
+*Versioned JSON API (v1)*
+- `POST /api/v1/check` — Spell-check text, returns corrections JSON
+- `POST /api/v1/grammar` — Grammar check, returns issues JSON
+- `POST /api/v1/suggestions` — Top-N suggestions for a word
+- `POST /api/v1/feedback` — Accept/reject a correction
+- `GET /api/v1/health` — Liveness probe
+- `GET /api/v1/stats` — Vocabulary, n-gram, cache, feedback metrics
+
+*Legacy aliases (kept for backwards compatibility)*
+- `POST /suggestions` — Same as `/api/v1/suggestions`
+- `POST /check_grammar` — Same as `/api/v1/grammar`
+- `POST /api/suggest` — Autocomplete (rate-limited)
+- `GET /stats` — Same as `/api/v1/stats`
+- `GET /health` — Same as `/api/v1/health`
+
+*SEO / Infrastructure*
+- `GET /ads.txt` — AdSense verification
+- `GET /robots.txt` — Crawler policy
+- `GET /sitemap.xml` — XML sitemap (15 pages)
+
+Interactive API docs: `/api/docs` (Swagger UI)
 
 **Rate Limiting**:
 - 100 requests per minute per IP
-- Sliding window algorithm
-- Automatic cleanup of old requests
+- **Redis** (sliding window via sorted sets) when `REDIS_URL` env var is set
+- Automatic **in-memory fallback** when Redis is unavailable
+- Applied via `@rate_limit` decorator on all user-facing endpoints
+
+**Environment Variables**:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PORT` | `8080` | Server port (injected by Railway/Render) |
+| `REDIS_URL` | *(unset)* | Redis connection string for distributed rate limiting |
+| `USE_ML` | `true` | Set `false` to skip loading AfriBERTa (fast startup) |
 
 ### 2. Spell Checker (`spell_checker_ml.py`)
 

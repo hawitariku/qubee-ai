@@ -1,6 +1,16 @@
 """
 Download Afaan Oromo text from Wikipedia to expand the corpus.
 
+NOTE: This script is superseded by scripts/expand_corpus_news.py, which
+covers BBC Afaan Oromo, VOA Afaan Oromo, AND Oromo Wikipedia with better
+deduplication, retry logic, and a dry-run mode.
+
+Prefer using:
+    python scripts/expand_corpus_news.py --wiki --backup --limit 50
+
+This file is kept for reference only.
+---
+Original description:
 This script:
 1. Fetches articles from om.wikipedia.org
 2. Extracts clean text content
@@ -124,7 +134,7 @@ def main():
         print("=" * 60)
         print("\nNext steps:")
         print("1. Restart your web server:")
-        print("   C:\\Python312\\python.exe main.py")
+        print("   uvicorn main:app --host 0.0.0.0 --port 8080")
         print("2. Test with expanded vocabulary!")
         print("\nExample test sentence:")
         print("  'Afaan Oromoo kuusaa jechoota bal'aa qaba'")

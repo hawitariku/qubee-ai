@@ -1,73 +1,97 @@
-# Quick Start - Deploy & Earn Money
+# Qubeessaa AI — Quick Start
 
-## ✅ Checklist (Do in Order)
-
-### **Phase 1: Deploy (30 minutes)**
-
-- [ ] 1. Go to https://render.com
-- [ ] 2. Sign up with GitHub (hawitariku account)
-- [ ] 3. Click "New +" → "Web Service"
-- [ ] 4. Connect repository: **qubee-ai**
-- [ ] 5. Settings:
-  - Build: `pip install -r requirements.txt`
-  - Start: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-  - Instance: **Free**
-- [ ] 6. Click "Create Web Service"
-- [ ] 7. Wait 5-10 minutes for deployment
-- [ ] 8. Copy your URL: `https://qubee-ai.onrender.com`
-- [ ] 9. Test it - type "akam" and check spelling
-
-### **Phase 2: AdSense Setup (10 minutes)**
-
-- [ ] 10. Go to https://www.google.com/adsense
-- [ ] 11. Log in with your Google account
-- [ ] 12. Click "Sites" → "Add site"
-- [ ] 13. Enter your Render URL
-- [ ] 14. Copy your Publisher ID: `ca-pub-XXXXXXXXXXXXXXXX`
-- [ ] 15. Update `templates/index.html` with your Publisher ID
-- [ ] 16. Commit and push changes to GitHub
-- [ ] 17. Render will auto-deploy (wait 2-3 minutes)
-- [ ] 18. Click "Request Review" in AdSense
-- [ ] 19. Wait 1-7 days for approval
-
-### **Phase 3: Marketing (Ongoing)**
-
-- [ ] 20. Share on Facebook (Ethiopian/Oromo groups)
-- [ ] 21. Share on Twitter with #AfaanOromo #Ethiopia
-- [ ] 22. Email Ethiopian schools and universities
-- [ ] 23. Post on Ethiopian forums
-- [ ] 24. Ask friends to share
-- [ ] 25. Add to your social media bio
-
-### **Phase 4: Track & Earn**
-
-- [ ] 26. Check AdSense dashboard daily
-- [ ] 27. Track page views and earnings
-- [ ] 28. Optimize based on user feedback
-- [ ] 29. Celebrate your first $1! 🎉
-- [ ] 30. Scale to 1,000 daily users → $15-60/month
+Get the app running locally in under 5 minutes.
 
 ---
 
-## 🎯 Your Goal
+## Prerequisites
 
-**Month 1:** 100 users/day → $1.50-6/month  
-**Month 3:** 500 users/day → $7.50-30/month  
-**Month 6:** 1,000 users/day → $15-60/month  
-**Month 12:** 5,000 users/day → $75-300/month
+- Python 3.11 or 3.12
+- Git
 
 ---
 
-## 📞 Need Help?
+## 1. Clone and install
 
-- **Deployment issues**: Check `DEPLOYMENT_GUIDE.md`
-- **AdSense setup**: Check `ADSENSE_SETUP_GUIDE.md`
-- **Technical issues**: Check GitHub Issues
+```bash
+git clone https://github.com/hawitariku/qubeessaa-ai.git
+cd qubeessaa-ai
+
+python -m venv venv
+source venv/bin/activate        # Windows: venv\Scripts\activate
+
+pip install -r requirements.txt
+```
 
 ---
 
-## 🚀 Start Now!
+## 2. Configure (optional)
 
-**Step 1:** Go to https://render.com and sign up!
+```bash
+cp .env.example .env
+```
 
-**Good luck!** 🎉
+Open `.env` and set:
+
+```
+# Skip the 500 MB AfriBERTa model download for fast startup
+USE_ML=false
+
+# Leave PORT and REDIS_URL at defaults for local dev
+PORT=8080
+```
+
+---
+
+## 3. Run
+
+```bash
+uvicorn main:app --host 0.0.0.0 --port 8080 --reload
+```
+
+Open **http://localhost:8080** — type some Afaan Oromo text and hit Check.
+
+> **With ML disabled** startup takes ~6 seconds.  
+> **With ML enabled** first startup downloads ~500 MB and takes 2–5 minutes.
+
+---
+
+## 4. Run tests
+
+```bash
+python tests/test_spell_checker.py
+# Expected: 25 passed, 0 failed
+```
+
+---
+
+## 5. Expand the corpus (optional)
+
+The vocabulary comes from the Biblica Afaan Oromo Bible. To add news text:
+
+```bash
+# Dry run first
+python scripts/expand_corpus_news.py --all --dry-run --limit 20
+
+# Real run
+python scripts/expand_corpus_news.py --all --backup --limit 100
+```
+
+Then restart the server so it reloads the updated corpus.
+
+---
+
+## 6. Deploy
+
+See [DEPLOY.md](DEPLOY.md) for Railway, Render, and Docker instructions.
+
+---
+
+## Common issues
+
+| Problem | Fix |
+|---------|-----|
+| `ModuleNotFoundError: fastapi` | Run `pip install -r requirements.txt` |
+| Server hangs on startup | Set `USE_ML=false` in `.env` |
+| Port already in use | Change `PORT=8081` in `.env` |
+| `user_feedback.json` not found | Ignored on first run; created automatically |

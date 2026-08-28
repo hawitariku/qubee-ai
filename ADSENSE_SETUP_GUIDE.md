@@ -14,8 +14,8 @@ Before you can use AdSense, your app must be publicly accessible online.
 3. Connect your repository: https://github.com/hawitariku/qubee-ai
 4. Create new "Web Service"
 5. Build command: `pip install -r requirements.txt`
-6. Start command: `python main.py`
-7. Your app will be at: `https://qubee-ai.onrender.com`
+6. Start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+7. Your app will be at: `https://qubeessaa-ai.onrender.com`
 
 ### **Option B: Deploy to Railway (Free)**
 1. Go to https://railway.app
