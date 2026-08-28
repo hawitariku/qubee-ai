@@ -9,19 +9,20 @@ from typing import List, Dict, Tuple, Optional
 from grammar_checker import AfaanOromoGrammarChecker
 
 try:
-    import PyPDF2
+    # pypdf is the maintained successor to the unmaintained PyPDF2 package.
+    # Both expose the same PdfReader API used below.
+    try:
+        from pypdf import PdfReader as _PdfReader
+    except ImportError:
+        from PyPDF2 import PdfReader as _PdfReader  # legacy fallback
     HAS_PDF = True
 except ImportError:
     HAS_PDF = False
-    print("⚠️ PyPDF2 not installed. Install with: pip install PyPDF2")
 
-try:
-    from transformers import AutoTokenizer, AutoModelForMaskedLM
-    import torch
-    HAS_TRANSFORMERS = True
-except ImportError:
-    HAS_TRANSFORMERS = False
-    print("⚠️ Transformers not installed. Install with: pip install transformers torch")
+# transformers/torch are imported lazily inside __init__ only when use_ml=True.
+# Top-level import is intentionally omitted — it causes multi-minute hangs on
+# CPU-only machines where PyTorch must initialise its CUDA/MPS subsystems.
+HAS_TRANSFORMERS = False  # updated to True inside __init__ if import succeeds
 
 # Setup logging
 logging.basicConfig(
@@ -45,26 +46,37 @@ class MLEnhancedSpellChecker:
         self.feedback_log_path = Path('user_feedback.json')
         self._load_user_feedback()
         
-        # ML Model integration
-        self.use_ml = use_ml and HAS_TRANSFORMERS
+        # ML Model integration — lazy import to avoid startup hang on CPU-only machines
+        self.use_ml = False
         self.ml_model = None
         self.ml_tokenizer = None
-        
-        if self.use_ml:
+        self._torch = None  # set when ML loads successfully
+
+        if use_ml:
             try:
+                from transformers import AutoTokenizer, AutoModelForMaskedLM
+                import torch as _torch
                 print(f"\n🤖 Loading ML model: {model_name}")
                 self.ml_tokenizer = AutoTokenizer.from_pretrained(model_name)
                 self.ml_model = AutoModelForMaskedLM.from_pretrained(model_name)
-                self.ml_model.eval()  # Set to evaluation mode
+                self.ml_model.eval()
+                self.use_ml = True
+                # Make torch available to get_ml_suggestions
+                self._torch = _torch
                 print("✅ ML model loaded successfully!")
+            except ImportError:
+                print("⚠️ transformers/torch not installed — running without ML model.")
+                self.use_ml = False
             except Exception as e:
                 print(f"⚠️ Failed to load ML model: {e}")
                 self.use_ml = False
         
         # Common Afaan Oromo words with high priority
         self.common_words = {
-            'afaan': 10000, 'oromoo': 10000, 'inni': 9000, 'isheen': 9000,
-            'ani': 9000, 'nuti': 9000, 'isin': 9000, 'isaan': 9000,
+            'afaan': 10000, 'oromoo': 10000, 'inni': 9500, 'isheen': 9500,
+            'ani': 9500, 'nuti': 9500, 'isin': 9500, 'isaan': 9500,
+            # Core pronouns get extra-high freq so corpus variants don't beat them
+            'ati': 9500,
             'bishaan': 8000, 'mana': 8000, 'deeme': 8000, 'dhufe': 8000,
             'fedha': 8000, 'jira': 8000, 'barumsa': 8000, 'gabri': 8000,
             'nama': 7000, 'dubartii': 7000, 'ijoollee': 7000, 'hojii': 7000,
@@ -157,7 +169,11 @@ class MLEnhancedSpellChecker:
         
         # Optimize vocabulary - remove rare words (likely typos)
         self.optimize_vocabulary(min_frequency=5)
-        
+
+        # Wire the final vocabulary into the grammar checker so verb detection
+        # can cross-reference it and avoid mis-classifying nouns as verbs.
+        self.grammar_checker.set_vocabulary(self.words_db)
+
         print(f"{'='*60}")
 
     def _load_user_feedback(self):
@@ -187,37 +203,59 @@ class MLEnhancedSpellChecker:
         except Exception as e:
             logger.error(f"Error saving user feedback: {e}")
 
+    # Maximum frequency boost a single word can accumulate from user feedback.
+    # Prevents runaway boosts from repeated or accidental accepts.
+    _MAX_FEEDBACK_BOOST = 5000
+
     def _apply_user_feedback_boosts(self):
         """Apply boosts to words based on user feedback"""
         for correction_pair, count in self.user_feedback_db.items():
             # correction_pair format: "original->corrected"
             if '->' in correction_pair:
                 _, corrected = correction_pair.split('->', 1)
-                # Boost frequency based on user acceptances
-                boost = count * 100  # Each acceptance adds 100 to frequency
+                # Boost frequency based on user acceptances, capped per word
+                boost = min(count * 100, self._MAX_FEEDBACK_BOOST)
                 self.words_db[corrected] += boost
         logger.info(f"Applied feedback boosts for {len(self.user_feedback_db)} corrections")
 
     def record_user_feedback(self, original_word: str, corrected_word: str, accepted: bool):
         """Record user feedback on a correction"""
         key = f"{original_word}->{corrected_word}"
-        
+
         if accepted:
             self.user_feedback_db[key] += 1
-            # Immediately apply boost
-            self.words_db[corrected_word] += 50
+            # Immediate boost, capped so a single word can't exceed MAX_FEEDBACK_BOOST
+            current_boost = self.user_feedback_db[key] * 50
+            if current_boost <= self._MAX_FEEDBACK_BOOST:
+                self.words_db[corrected_word] += 50
+            else:
+                logger.warning(
+                    f"Feedback boost cap reached for '{corrected_word}' "
+                    f"(accepted {self.user_feedback_db[key]} times). No further boost applied."
+                )
         else:
-            # User rejected - reduce frequency
+            # User rejected — reduce frequency, but never below 1
             self.words_db[corrected_word] = max(1, self.words_db[corrected_word] - 20)
-        
-        # Log the feedback
+
+        # Log the feedback event
         self.correction_history.append({
             'original': original_word,
             'corrected': corrected_word,
             'accepted': accepted,
             'timestamp': datetime.now().isoformat()
         })
-        
+
+        # Flag high-volume corrections for manual review (> 20 accepts or > 10 rejects)
+        total_accepts = self.user_feedback_db.get(key, 0)
+        reject_key = f"rejected:{key}"
+        total_rejects = self.user_feedback_db.get(reject_key, 0)
+        if accepted and total_accepts == 20:
+            logger.info(f"REVIEW CANDIDATE (high accepts): '{original_word}' → '{corrected_word}' accepted {total_accepts}x")
+        if not accepted:
+            self.user_feedback_db[reject_key] = self.user_feedback_db.get(reject_key, 0) + 1
+            if self.user_feedback_db[reject_key] == 10:
+                logger.warning(f"REVIEW CANDIDATE (frequent rejects): '{original_word}' → '{corrected_word}' rejected {self.user_feedback_db[reject_key]}x")
+
         # Save to disk
         self._save_user_feedback()
         logger.info(f"Recorded feedback: {original_word} -> {corrected_word} (accepted={accepted})")
@@ -257,12 +295,12 @@ class MLEnhancedSpellChecker:
         print(f"✅ Vocabulary size: {len(self.words_db)} unique words")
     
     def extract_text_from_pdf(self, pdf_path):
-        """Extract text from PDF"""
+        """Extract text from PDF using pypdf (or PyPDF2 as legacy fallback)."""
         if not HAS_PDF:
             return ""
         try:
             with open(pdf_path, 'rb') as f:
-                pdf_reader = PyPDF2.PdfReader(f)
+                pdf_reader = _PdfReader(f)
                 text = ""
                 for page in pdf_reader.pages:
                     page_text = page.extract_text()
@@ -293,12 +331,12 @@ class MLEnhancedSpellChecker:
             # Tokenize and predict
             inputs = self.ml_tokenizer(masked_sentence, return_tensors='pt')
             
-            with torch.no_grad():
+            with self._torch.no_grad():
                 outputs = self.ml_model(**inputs)
                 predictions = outputs.logits[0, word_index]  # Get predictions for masked token
             
             # Get top-k predictions
-            top_indices = torch.topk(predictions, top_k * 3).indices.tolist()  # Get more to filter
+            top_indices = self._torch.topk(predictions, top_k * 3).indices.tolist()  # Get more to filter
             
             suggestions = []
             for idx in top_indices:
@@ -632,14 +670,26 @@ class MLEnhancedSpellChecker:
             
             valid_candidates.append(cand)
         
-        # Sort by FREQUENCY ONLY (highest first)
-        sorted_candidates = sorted(valid_candidates, key=lambda x: self.words_db[x], reverse=True)
-        
+        # Sort by a BALANCED score: 60% phonetic similarity + 40% normalised frequency.
+        # This prevents high-frequency but phonetically-irrelevant words (e.g. Biblical
+        # proper nouns) from crowding out more accurate suggestions.
+        max_freq = max((self.words_db[c] for c in valid_candidates), default=1)
+
+        def _alt_score(cand: str) -> float:
+            phonetic = self._phonetic_similarity(word_lower, cand)
+            freq_norm = self.words_db[cand] / max_freq
+            return phonetic * 0.60 + freq_norm * 0.40
+
+        sorted_candidates = sorted(valid_candidates, key=_alt_score, reverse=True)
+
         return sorted_candidates[:top_n]
 
     def correct_word(self, word):
-        """Corrects a single word using balanced scoring"""
+        """Corrects a single word using balanced scoring.
+        Preserves the capitalisation pattern of the input word.
+        """
         word_lower = word.lower()
+        is_capitalised = word and word[0].isupper()
         
         # Check cache
         cache_key = f"correct:{word_lower}"
@@ -728,11 +778,15 @@ class MLEnhancedSpellChecker:
         scored_candidates.sort(key=lambda x: (x[1], x[3]), reverse=True)
         
         # Get the best candidate
-        best_candidate = scored_candidates[0][0] if scored_candidates else word
-        
+        best_candidate = scored_candidates[0][0] if scored_candidates else word_lower
+
+        # Restore original capitalisation
+        if is_capitalised and best_candidate:
+            best_candidate = best_candidate.capitalize()
+
         # Cache result
         self.correction_cache[cache_key] = best_candidate
-        
+
         return best_candidate
 
     def correct_sentence_with_context(self, sentence):
@@ -751,7 +805,21 @@ class MLEnhancedSpellChecker:
                 continue
             
             word_lower = clean_word.lower()
-            
+
+            # Skip purely numeric tokens — numbers don't need spell checking
+            if clean_word.isdigit():
+                corrected_words.append(word)
+                continue
+
+            # Preserve words containing apostrophes if they look like valid
+            # Afaan Oromo glottal-stop forms (e.g. ba'ee, ta'uu, dha'uu).
+            # If the base form (before apostrophe) is recognisable, keep as-is.
+            if "'" in clean_word:
+                parts = clean_word.lower().split("'")
+                if all(len(p) >= 1 for p in parts):
+                    corrected_words.append(word)
+                    continue
+
             # If word is in vocabulary, keep it as-is
             if word_lower in self.words_db:
                 corrected_words.append(word)
@@ -1028,6 +1096,10 @@ class MLEnhancedSpellChecker:
         """Main correction method - backward compatible"""
         corrected, _ = self.correct_sentence_with_context(sentence)
         return corrected
+
+    def correct_sentence(self, sentence):
+        """Alias for ai_correct_sentence — used by tests and external callers."""
+        return self.ai_correct_sentence(sentence)
     
     def get_detailed_corrections(self, sentence):
         """Get detailed correction information with alternative suggestions"""

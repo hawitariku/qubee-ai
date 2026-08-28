@@ -209,18 +209,18 @@ class TestVocabularySize(unittest.TestCase):
     
     def test_vocabulary_loaded(self):
         """Test that vocabulary is loaded"""
-        vocab_size = len(cls.checker.words_db)
+        vocab_size = len(self.checker.words_db)
         self.assertGreater(vocab_size, 1000, "Should have substantial vocabulary")
     
     def test_common_words_present(self):
         """Test that common Afaan Oromo words are in vocabulary"""
         common_words = ['ani', 'ati', 'inni', 'isheen', 'nuti', 'bishaan', 'mana', 'deeme']
         for word in common_words:
-            self.assertIn(word, cls.checker.words_db, f"Common word '{word}' should be in vocabulary")
+            self.assertIn(word, self.checker.words_db, f"Common word '{word}' should be in vocabulary")
     
     def test_bigrams_loaded(self):
         """Test that bigrams are loaded"""
-        bigram_count = len(cls.checker.bigrams)
+        bigram_count = len(self.checker.bigrams)
         self.assertGreater(bigram_count, 100, "Should have bigrams loaded")
 
 

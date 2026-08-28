@@ -1,6 +1,6 @@
-# Contributing to Qubee AI
+# Contributing to Qubeessaa AI
 
-Thank you for your interest in contributing to Qubee AI! This document provides guidelines for contributing to the project.
+Thank you for your interest in contributing to Qubeessaa AI! This document provides guidelines for contributing to the project.
 
 ## Ways to Contribute
 
@@ -35,8 +35,8 @@ Thank you for your interest in contributing to Qubee AI! This document provides 
 
 ```bash
 # Fork and clone the repository
-git clone https://github.com/YOUR_USERNAME/qubee-ai.git
-cd qubee-ai
+git clone https://github.com/hawitariku/qubeessaa-ai.git
+cd qubeessaa-ai
 
 # Create a virtual environment
 python -m venv venv
@@ -135,9 +135,15 @@ When adding new grammar rules:
 4. Consider edge cases
 5. Avoid false positives
 
-## Community Guidelines
+## API Endpoints
 
-- Be respectful and inclusive
+The public JSON API lives under `/api/v1/`. When adding new endpoints, follow the existing pattern in `main.py`:
+- All endpoints must use `@rate_limit`
+- Input must be validated through `_sanitise_text()` or `_sanitise_word()`
+- Return `JSONResponse` with a consistent shape
+- Document the endpoint in `DEPLOY.md` and the API table in `README.md`
+
+## Community Guidelines- Be respectful and inclusive
 - Welcome newcomers
 - Provide constructive feedback
 - Focus on the code, not the person
