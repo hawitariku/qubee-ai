@@ -827,22 +827,35 @@ class MLEnhancedSpellChecker:
             
             # Use the balanced scoring from correct_word()
             corrected = self.correct_word(word_lower)
-            
+
             # Preserve original capitalization
             if clean_word[0].isupper():
                 corrected = corrected.capitalize()
-            
+
             # Add punctuation back
             corrected_with_punct = corrected + punctuation
-            
+
             # Track correction if word changed
             if corrected != word_lower:
+                # Compute real confidence using edit distance + phonetic + frequency.
+                # Gather the same candidate set correct_word() used so the confidence
+                # calculation has meaningful comparisons rather than just the winner.
+                _edits1 = self._get_edits(word_lower)
+                _cands = self._known(_edits1)
+                if not _cands:
+                    _edits2 = set(e2 for e1 in list(_edits1)[:50] for e2 in self._get_edits(e1))
+                    _cands = self._known(_edits2)
+                confidence = self._calculate_confidence(
+                    _cands if _cands else {corrected.lower()},
+                    corrected.lower(),
+                    word_lower
+                )
                 corrected_words.append(corrected_with_punct)
                 corrections_made.append({
                     'original': word,
                     'corrected': corrected_with_punct,
                     'position': i,
-                    'confidence': 85  # Default confidence for balanced scoring
+                    'confidence': confidence,
                 })
             else:
                 corrected_words.append(word)

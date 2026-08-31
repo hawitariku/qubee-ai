@@ -192,6 +192,22 @@ async def ads_txt():
     return "google.com, pub-4332009994407882, DIRECT, f08c47fec0942fa0"
 
 
+@app.get("/favicon.ico")
+async def favicon():
+    """
+    Serve an SVG favicon as ICO to stop browser 404 log spam.
+    The SVG renders a simple 'Q' lettermark in the brand purple.
+    """
+    svg = (
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">'
+        '<rect width="32" height="32" rx="6" fill="#667eea"/>'
+        '<text x="16" y="23" font-family="Arial,sans-serif" font-size="20" '
+        'font-weight="bold" fill="white" text-anchor="middle">Q</text>'
+        '</svg>'
+    )
+    return Response(content=svg, media_type="image/svg+xml")
+
+
 @app.get("/robots.txt", response_class=PlainTextResponse)
 async def robots_txt():
     return (
